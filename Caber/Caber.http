@@ -1,0 +1,6 @@
+@Caber_HostAddress = http://localhost:5199
+
+GET {{Caber_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
