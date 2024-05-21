@@ -1,4 +1,7 @@
 
+using Caber.Contexts;
+using Microsoft.EntityFrameworkCore;
+
 namespace Caber
 {
     public class Program
@@ -14,6 +17,13 @@ namespace Caber
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen();
+            ;
+            #region Contexts
+            builder.Services.AddDbContext<CaberContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("default"));
+            });
+            #endregion
 
             var app = builder.Build();
 
