@@ -1,5 +1,6 @@
 
 using Caber.Contexts;
+using Caber.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Caber
@@ -19,15 +20,23 @@ namespace Caber
             builder.Services.AddSwaggerGen();
             ;
             #region Contexts
+            var DBHOST = Environment.GetEnvironmentVariable("DB_HOST");
+            var DBPASS = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
+            var DBNAME = Environment.GetEnvironmentVariable("DB_NAME");
+            var connectionString = @$"Server={DBHOST};Database={DBNAME};User Id=sa;Password={DBPASS};TrustServerCertificate=True";
+
             builder.Services.AddDbContext<CaberContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("default"));
+                options.UseSqlServer(connectionString);
             });
             #endregion
+
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
+            DatabaseMigrationService.MigrateInitial(app);
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
