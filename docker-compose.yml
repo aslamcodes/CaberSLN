@@ -1,0 +1,38 @@
+version: '3.4'
+
+networks:
+  caber:
+    driver: bridge
+
+
+services:
+  caber:
+    container_name: caberapp
+    image: ${DOCKER_REGISTRY-}caber
+    build:
+      context: .
+      dockerfile: Caber/Dockerfile
+    ports:
+      - 8001:80
+    depends_on:
+      - caber-db
+    environment:
+     - DB_HOST=caber-db
+     - DB_NAME=caberdb
+     - DB_SA_PASSWORD=Password123
+    networks:
+      - caber
+  caber-db:
+        container_name: caberdb
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        ports:
+         - 8002:1433
+        environment:
+          SA_PASSWORD: Password123
+          ACCEPT_EULA: Y
+        networks:
+         - caber
+        volumes:
+         - db-data:/var/lib/mssql/data
+volumes:
+  db-data:  
