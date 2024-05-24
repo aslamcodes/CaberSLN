@@ -34,8 +34,9 @@ namespace Caber
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             DatabaseMigrationService.MigrateInitial(app);
+
+            // Configure the HTTP request pipeline.
 
             if (app.Environment.IsDevelopment())
             {
@@ -48,7 +49,10 @@ namespace Caber
 
             app.MapControllers();
 
+
             app.Run();
         }
+
+
     }
 }
