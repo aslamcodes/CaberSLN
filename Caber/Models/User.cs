@@ -17,5 +17,9 @@ namespace Caber.Models
         public string? Address { get; set; }
 
         public UserTypeEnum UserType { get; set; }
+
+        public Driver Driver { get; set; }
+
+        public Passenger Passenger { get; set; }
     }
 }

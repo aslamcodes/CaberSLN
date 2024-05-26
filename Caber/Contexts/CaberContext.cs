@@ -65,10 +65,20 @@ namespace Caber.Contexts
                 .WithOne(Cab => Cab.Driver)
                 .HasForeignKey(cab => cab.DriverId);
 
+            modelBuilder.Entity<Driver>()
+                .HasOne(Driver => Driver.User)
+                .WithOne(User => User.Driver)
+                .HasForeignKey<Driver>(Driver => Driver.UserId);
+
             modelBuilder.Entity<Passenger>()
                 .HasMany(Passenger => Passenger.FavoritePlaces)
                 .WithOne(FavoritePlaces => FavoritePlaces.Passenger)
                 .HasForeignKey(favPlace => favPlace.PassengerId);
+
+            modelBuilder.Entity<Passenger>()
+                .HasOne(Passenger => Passenger.User)
+                .WithOne(User => User.Passenger)
+                .HasForeignKey<Passenger>(Passenger => Passenger.UserId);
 
             modelBuilder.Entity<Ride>()
                 .HasOne(Ride => Ride.Cab)
