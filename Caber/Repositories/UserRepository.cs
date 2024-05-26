@@ -29,6 +29,7 @@ namespace Caber.Repositories
             {
                 var user = await GetByKey(key);
                 context.Users.Remove(user);
+                await context.SaveChangesAsync();
                 return user;
             }
             catch (Exception)
