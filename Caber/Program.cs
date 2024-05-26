@@ -1,5 +1,7 @@
 
 using Caber.Contexts;
+using Caber.Models;
+using Caber.Repositories;
 using Caber.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +20,7 @@ namespace Caber
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddSwaggerGen();
-            ;
+
             #region Contexts
             var DBHOST = Environment.GetEnvironmentVariable("DB_HOST");
             var DBPASS = Environment.GetEnvironmentVariable("DB_SA_PASSWORD");
@@ -31,11 +33,18 @@ namespace Caber
             });
             #endregion
 
+            #region Repositories
+            builder.Services.AddScoped<IRepository<int, User>, UserRepository>();
+
+            #endregion
+
+
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             DatabaseMigrationService.MigrateInitial(app);
+
+            // Configure the HTTP request pipeline.
 
             if (app.Environment.IsDevelopment())
             {
@@ -48,7 +57,10 @@ namespace Caber
 
             app.MapControllers();
 
+
             app.Run();
         }
+
+
     }
 }
