@@ -38,7 +38,7 @@ namespace Caber
 
             #region Repositories
             builder.Services.AddScoped<IRepository<int, User>, UserRepository>();
-
+            builder.Services.AddScoped<IRepository<int, Driver>, DriverRepository>();
             #endregion
 
             #region Services
@@ -48,7 +48,7 @@ namespace Caber
             #endregion
 
             #region BusinessServices
-
+            builder.Services.AddScoped<IDriverService, DriverService>();
             #endregion
             #endregion
 

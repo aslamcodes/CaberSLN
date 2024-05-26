@@ -1,4 +1,4 @@
-﻿namespace Caber.Repositories
+﻿namespace Caber.Exceptions
 {
     [Serializable]
     public class PassengerNotFoundException : Exception

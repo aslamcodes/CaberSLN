@@ -35,16 +35,18 @@ namespace Caber.Migrations
                 name: "drivers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     LicenseNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LicenseExpiryDate = table.Column<DateOnly>(type: "date", nullable: false)
+                    LicenseExpiryDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_drivers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_drivers_Users_Id",
-                        column: x => x.Id,
+                        name: "FK_drivers_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -55,13 +57,15 @@ namespace Caber.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_passengers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_passengers_Users_Id",
-                        column: x => x.Id,
+                        name: "FK_passengers_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -200,9 +204,21 @@ namespace Caber.Migrations
                 column: "PassengerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_drivers_UserId",
+                table: "drivers",
+                column: "UserId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FavoritePlaces_PassengerId",
                 table: "FavoritePlaces",
                 column: "PassengerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_passengers_UserId",
+                table: "passengers",
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Rides_CabId",
