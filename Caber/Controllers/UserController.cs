@@ -9,7 +9,7 @@ namespace Caber.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(IDriverService driverService) : Controller
+    public class UserController(IDriverService driverService, IPassengerService passengerService) : Controller
     {
         [Authorize]
         [HttpPost("register-driver")]
@@ -27,9 +27,9 @@ namespace Caber.Controllers
             {
                 return BadRequest(new ErrorModel("User not found", StatusCodes.Status400BadRequest));
             }
-            catch (DuplicateDriverException)
+            catch (DuplicatePassengerException)
             {
-                return BadRequest(new ErrorModel("Driver already registered", StatusCodes.Status400BadRequest));
+                return BadRequest(new ErrorModel("Passenger already registered", StatusCodes.Status400BadRequest));
             }
             catch (Exception)
             {
@@ -37,5 +37,30 @@ namespace Caber.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPost("register-passenger")]
+        [ProducesResponseType(typeof(PassengerRegisterResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<PassengerRegisterResponseDto>> RegisterPassenger([FromBody] PassengerRegisterRequestDto passenger)
+        {
+            try
+            {
+                var registeredPassenger = await passengerService.RegisterPassenger(passenger);
+
+                return Ok(registeredPassenger);
+            }
+            catch (UserNotFoundException)
+            {
+                return BadRequest(new ErrorModel("User not found", StatusCodes.Status400BadRequest));
+            }
+            catch (DuplicatePassengerException)
+            {
+                return BadRequest(new ErrorModel("Passenger already registered", StatusCodes.Status400BadRequest));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Caber.Exceptions;
-using Caber.Models;
+﻿using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.DTOs.Mappers;
 using Caber.Repositories;
