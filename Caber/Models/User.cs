@@ -22,4 +22,29 @@ namespace Caber.Models
 
         public Passenger Passenger { get; set; }
     }
+
+    public static class UserExtensions
+    {
+        public static bool IsDriver(this User user)
+        {
+            return user.UserType == UserTypeEnum.Driver;
+        }
+
+        public static bool IsPassenger(this User user)
+        {
+            return user.UserType == UserTypeEnum.Passenger;
+        }
+
+        public static bool IsPasswordCorrect(this User user, byte[] password)
+        {
+            for (int i = 0; i < password.Length; i++)
+            {
+                if (password[i] != user.Password[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
 }
