@@ -2,6 +2,7 @@
 using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Caber.Controllers
@@ -10,6 +11,7 @@ namespace Caber.Controllers
     [ApiController]
     public class UserController(IDriverService driverService) : Controller
     {
+        [Authorize]
         [HttpPost("register-driver")]
         [ProducesResponseType(typeof(DriverRegisterResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
