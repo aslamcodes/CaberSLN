@@ -19,8 +19,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Controllers\" />
-		<Folder Include="Models\DTOs\" />
+		<Folder Include="Migrations\" />
 	</ItemGroup>
 
 </Project>

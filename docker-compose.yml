@@ -13,7 +13,7 @@ services:
       context: .
       dockerfile: Caber/Dockerfile
     ports:
-      - 8001:80
+      - 8000:8080
     depends_on:
       - caber-db
     environment:

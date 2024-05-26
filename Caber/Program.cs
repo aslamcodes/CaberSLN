@@ -3,6 +3,7 @@ using Caber.Contexts;
 using Caber.Models;
 using Caber.Repositories;
 using Caber.Services;
+using Caber.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Caber
@@ -19,7 +20,9 @@ namespace Caber
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
 
+            #region SwaggerGen
             builder.Services.AddSwaggerGen();
+            #endregion
 
             #region Contexts
             var DBHOST = Environment.GetEnvironmentVariable("DB_HOST");
@@ -38,7 +41,16 @@ namespace Caber
 
             #endregion
 
+            #region Services
+            #region AuthServices
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ITokenService, TokenService>();
+            #endregion
 
+            #region BusinessServices
+
+            #endregion
+            #endregion
 
             var app = builder.Build();
 
@@ -53,7 +65,6 @@ namespace Caber
             }
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
