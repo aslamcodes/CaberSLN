@@ -1,5 +1,6 @@
 
 using Caber.Contexts;
+using Caber.Controllers;
 using Caber.Models;
 using Caber.Repositories;
 using Caber.Services;
@@ -87,9 +88,11 @@ namespace Caber
             builder.Services.AddScoped<IRepository<int, User>, UserRepository>();
             builder.Services.AddScoped<IRepository<int, Driver>, DriverRepository>();
             builder.Services.AddScoped<IRepository<int, Passenger>, PassengerRepository>();
+            builder.Services.AddScoped<IRepository<int, Cab>, CabRepository>();
             #endregion
 
             #region Services
+
             #region AuthServices
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
@@ -98,7 +101,14 @@ namespace Caber
             #region BusinessServices
             builder.Services.AddScoped<IDriverService, DriverService>();
             builder.Services.AddScoped<IPassengerService, PassengerService>();
+            builder.Services.AddScoped<ICabService, CabService>();
             #endregion
+            #endregion
+
+            #region Roles
+            builder.Services.AddAuthorizationBuilder()
+            .AddPolicy("Driver", policy => policy.RequireRole("Driver"))
+            .AddPolicy("Passenger", policy => policy.RequireClaim("Passenger"));
             #endregion
 
             var app = builder.Build();
@@ -122,7 +132,5 @@ namespace Caber
 
             app.Run();
         }
-
-
     }
 }
