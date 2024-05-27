@@ -12,19 +12,19 @@ namespace Caber.Models
 
         public DateTime StartTime { get; set; }
 
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
         public RideStatusEnum RideStatus { get; set; }
 
         public DateTime RideDate { get; set; }
 
-        public float RideDistance { get; set; }
+        public float? RideDistance { get; set; }
 
-        public double Fare { get; set; }
+        public double? Fare { get; set; }
 
-        public int PassengerRating { get; set; }
+        public int? PassengerRating { get; set; }
 
-        public string PassengerComment { get; set; }
+        public string? PassengerComment { get; set; }
 
         public int PassengerId { get; set; }
 

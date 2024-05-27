@@ -1,5 +1,4 @@
 ﻿using Caber.Contexts;
-using Caber.Exceptions;
 using Caber.Models;
 using Caber.Repositories;
 using Microsoft.EntityFrameworkCore;

@@ -16,9 +16,9 @@ namespace Caber
                 await context.SaveChangesAsync();
                 return entity;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
+                Console.WriteLine(e);
                 throw;
             }
         }

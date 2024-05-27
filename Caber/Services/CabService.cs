@@ -13,16 +13,16 @@ namespace Caber
         {
             try
             {
+                var cabDetails = await cabRepository.GetByKey(request.CabId);
+
                 var ride = new Ride()
                 {
                     CabId = request.CabId,
-                    StartLocation = request.StartLocation,
+                    StartLocation = request.PickupLocation,
                     PassengerId = request.PassengerId,
-                    EndLocation = request.Destination,
+                    EndLocation = request.DropoffLocation,
                     RideDate = DateTime.Now,
-
                 };
-                var cabDetails = await cabRepository.GetByKey(request.CabId);
 
                 var bookedRide = await rideRepository.Add(ride);
 
