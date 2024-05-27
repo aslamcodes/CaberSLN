@@ -89,6 +89,7 @@ namespace Caber
             builder.Services.AddScoped<IRepository<int, Driver>, DriverRepository>();
             builder.Services.AddScoped<IRepository<int, Passenger>, PassengerRepository>();
             builder.Services.AddScoped<IRepository<int, Cab>, CabRepository>();
+            builder.Services.AddScoped<IRepository<int, Ride>, RideRepository>();
             #endregion
 
             #region Services

@@ -24,5 +24,21 @@ namespace Caber.Controllers
             }
         }
 
+        [HttpPost("book-cab")]
+        [ProducesResponseType(typeof(BookCabResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<BookCabResponseDto>> BookCab([FromBody] BookCabRequestDto request)
+        {
+            try
+            {
+                var ride = await cabService.BookCab(request);
+
+                return Ok(ride);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

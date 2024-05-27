@@ -1,13 +1,40 @@
 ﻿using Caber.Controllers;
 using Caber.Extensions;
+using Caber.Extensions.DtoMappers;
 using Caber.Models;
 using Caber.Models.DTOs.Mappers;
 using Caber.Repositories;
 
 namespace Caber
 {
-    public class CabService(IRepository<int, Cab> cabRepository) : ICabService
+    public class CabService(IRepository<int, Cab> cabRepository, IRepository<int, Ride> rideRepository) : ICabService
     {
+        public async Task<BookCabResponseDto> BookCab(BookCabRequestDto request)
+        {
+            try
+            {
+                var ride = new Ride()
+                {
+                    CabId = request.CabId,
+                    StartLocation = request.StartLocation,
+                    PassengerId = request.PassengerId,
+                    EndLocation = request.Destination,
+                    RideDate = DateTime.Now,
+
+                };
+                var cabDetails = await cabRepository.GetByKey(request.CabId);
+
+                var bookedRide = await rideRepository.Add(ride);
+
+                return bookedRide.MapToBookCabResponseDto(cabDetails);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<List<CabResponseDto>> GetCabsByLocation(string location, int seatingCapacity)
         {
             try
