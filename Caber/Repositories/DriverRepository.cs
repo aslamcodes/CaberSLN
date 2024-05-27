@@ -59,7 +59,7 @@ namespace Caber.Repositories
         {
             try
             {
-                var driver = await context.Drivers.FindAsync(key);
+                var driver = await context.Drivers.Include(d => d.OwnedCabs).FirstOrDefaultAsync(d => d.Id == key);
 
                 return driver ?? throw new DriverNotFoundException(key);
             }

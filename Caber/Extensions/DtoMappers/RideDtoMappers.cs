@@ -26,5 +26,15 @@ namespace Caber.Extensions.DtoMappers
                 PassengerComment = ride.PassengerComment
             };
         }
+
+        public static RideRatingResponseDto MapToRideRatingResponseDto(this Ride ride)
+        {
+            return new RideRatingResponseDto()
+            {
+                RideId = ride.Id,
+                PassengerRating = ride.PassengerRating,
+                PassengerComment = ride.PassengerComment
+            };
+        }
     }
 }

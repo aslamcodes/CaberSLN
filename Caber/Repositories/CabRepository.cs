@@ -59,6 +59,7 @@ namespace Caber
             {
                 var driver = await context.Cabs
                                            .Include(c => c.Driver)
+                                           .Include(c => c.Rides)
                                            .FirstOrDefaultAsync(c => c.Id == key);
 
                 return driver ?? throw new CabNotFoundException(key);

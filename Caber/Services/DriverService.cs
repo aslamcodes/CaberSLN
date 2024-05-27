@@ -1,4 +1,6 @@
-﻿using Caber.Models;
+﻿using Caber.Controllers;
+using Caber.Extensions.DtoMappers;
+using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.DTOs.Mappers;
 using Caber.Models.Enums;
@@ -8,10 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caber.Services
 {
-    public class DriverService(IRepository<int, Driver> driverRepository, IRepository<int, User> userRepository) : IDriverService
+    public class DriverService(IRepository<int, Driver> driverRepository, IRepository<int, User> userRepository, IRepository<int, Cab> cabRepository) : IDriverService
     {
-
-
         public async Task<DriverRegisterResponseDto> RegisterDriver(DriverRegisterRequestDto driver)
         {
 
@@ -45,6 +45,32 @@ namespace Caber.Services
                 throw;
             }
 
+        }
+
+        public async Task<List<RideRatingResponseDto>> GetDriverRideRatings(int driverId)
+        {
+            try
+            {
+                var driver = await driverRepository.GetByKey(driverId);
+
+                List<RideRatingResponseDto> rideRatings = [];
+
+                foreach (var cab in driver.OwnedCabs)
+                {
+                    foreach (var ride in (await cabRepository.GetByKey(cab.Id)).Rides)
+                    {
+                        rideRatings.Add(ride.MapToRideRatingResponseDto());
+                    }
+
+                }
+
+                return rideRatings;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
     }
 
