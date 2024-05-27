@@ -35,7 +35,7 @@ namespace Caber.Services
                 var ride = await rideRepository.GetByKey(rateRide.RideId) ?? throw new RideNotFoundException(rateRide.RideId);
 
                 ride.PassengerRating = rateRide.Rating;
-                ride.PassengerComment = rateRide.Comment;
+                ride.PassengerComment = rateRide.Comment ?? null;
 
                 var ratedRide = await rideRepository.Update(ride);
 
