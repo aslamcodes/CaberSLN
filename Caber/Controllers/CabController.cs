@@ -10,11 +10,11 @@ namespace Caber.Controllers
         [HttpGet()]
         [ProducesResponseType(typeof(CabResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
-        public async Task<ActionResult<List<CabResponseDto>>> GetCabsByLocation([FromQuery] string location)
+        public async Task<ActionResult<List<CabResponseDto>>> GetCabsByLocation([FromQuery] string location, [FromQuery] int seatingCapacity)
         {
             try
             {
-                var cabs = await cabService.GetCabsByLocation(location);
+                var cabs = await cabService.GetCabsByLocation(location, seatingCapacity);
 
                 return Ok(cabs);
             }

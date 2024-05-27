@@ -2,6 +2,6 @@
 {
     public interface ICabService
     {
-        Task<List<CabResponseDto>> GetCabsByLocation(string location);
+        Task<List<CabResponseDto>> GetCabsByLocation(string location, int seatingCapacity);
     }
 }
