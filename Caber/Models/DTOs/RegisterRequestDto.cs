@@ -6,21 +6,21 @@ namespace Caber.Models.DTOs
     {
         [Required(ErrorMessage = "Email is Required")]
         [EmailAddress(ErrorMessage = "Invalid Email")]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Required(ErrorMessage = "First Name is Required")]
         [MinLength(2)]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
 
-        public string LastName { get; set; }
+        public string LastName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Password is Required")]
         [MinLength(6)]
-        public string Password { get; set; }
+        public required string Password { get; set; }
 
         [Required(ErrorMessage = "Phone is Required")]
         [Phone(ErrorMessage = "Invalid Phone Number")]
-        public string Phone { get; set; }
-        public string Address { get; set; }
+        public required string Phone { get; set; }
+        public string Address { get; set; } = string.Empty;
     }
 }

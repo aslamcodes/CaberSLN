@@ -105,17 +105,11 @@ namespace Caber
         {
             try
             {
-                var cab = await cabRepository.GetByKey(cabDetails.CabId);
-
-                if (cab is null)
-                {
-                    throw new CabNotFoundException(cabDetails.CabId);
-                }
-
-                cab.Color = cabDetails.Color;
-                cab.SeatingCapacity = cabDetails.SeatingCapacity;
-                cab.Model = cabDetails.Model;
-                cab.Make = cabDetails.Make;
+                var cab = await cabRepository.GetByKey(cabDetails.CabId) ?? throw new CabNotFoundException(cabDetails.CabId);
+                if (cabDetails.Color == string.Empty) cab.Color = cabDetails.Color;
+                if (cabDetails.SeatingCapacity > 0) cab.SeatingCapacity = cabDetails.SeatingCapacity;
+                if (cabDetails.Model == string.Empty) cab.Model = cabDetails.Model;
+                if (cabDetails.Make == string.Empty) cab.Make = cabDetails.Make;
 
                 var updatedCab = await cabRepository.Update(cab);
 
