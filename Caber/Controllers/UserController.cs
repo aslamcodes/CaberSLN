@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Caber.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController(IDriverService driverService, IPassengerService passengerService) : Controller
     {
-        [Authorize]
         [HttpPost("register-driver")]
         [ProducesResponseType(typeof(DriverRegisterResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
@@ -37,7 +37,6 @@ namespace Caber.Controllers
             }
         }
 
-        [Authorize]
         [HttpPost("register-passenger")]
         [ProducesResponseType(typeof(PassengerRegisterResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
