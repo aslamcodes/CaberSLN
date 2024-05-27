@@ -1,5 +1,4 @@
-﻿using Caber.Controllers;
-using Caber.Extensions.DtoMappers;
+﻿using Caber.Extensions.DtoMappers;
 using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.DTOs.Mappers;
