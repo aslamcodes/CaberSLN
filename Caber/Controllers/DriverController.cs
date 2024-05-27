@@ -3,6 +3,7 @@ using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.DTOs.Mappers;
 using Caber.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Caber.Controllers
@@ -11,7 +12,10 @@ namespace Caber.Controllers
     [ApiController]
     public class DriverController(IDriverService driverService, ICabService cabService) : Controller
     {
+        [Authorize]
         [HttpGet("ride-ratings-for-driver")]
+        [ProducesResponseType(typeof(RideRatingResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
         public async Task<ActionResult<List<RideRatingResponseDto>>> GetRideRatingsForDriver([FromQuery] int driverId)
         {
             try
@@ -31,6 +35,7 @@ namespace Caber.Controllers
             }
         }
 
+        [Authorize(Policy = "Driver")]
         [HttpPut("update-cab")]
         [ProducesResponseType(typeof(CabResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
@@ -56,6 +61,7 @@ namespace Caber.Controllers
             }
         }
 
+        [Authorize(Policy = "Driver")]
         [HttpPost("register-cab")]
         [ProducesResponseType(typeof(CabResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]

@@ -15,8 +15,6 @@ namespace Caber.Services
         {
             _secretKey = configuration.GetSection("TokenKey").GetSection("key").Value.ToString();
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
-
-
         }
         public string GenerateUserToken(User user)
         {

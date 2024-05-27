@@ -1,10 +1,12 @@
 ﻿using Caber.Models;
 using Caber.Services;
 using Caber.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Caber.Controllers
 {
+    [Authorize(Policy = "Passenger")]
     [Route("api/[controller]")]
     [ApiController]
     public class PassengerController(IRideService rideService, ICabService cabService) : Controller
