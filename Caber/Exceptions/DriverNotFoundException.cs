@@ -1,15 +1,10 @@
 ﻿namespace Caber.Exceptions
 {
     [Serializable]
-    public class DriverNotFoundException : Exception
+    public class DriverNotFoundException(int key) : Exception
     {
-        private readonly string message;
-        public DriverNotFoundException(int key)
-        {
-            this.message = $"Driver with key {key} not found";
-        }
+        public override string Message => $"Driver with key {key} not found";
 
-        public override string Message => message;
 
     }
 }

@@ -1,18 +1,83 @@
 ﻿using Caber.Contexts;
-using Caber.Exceptions;
 using Caber.Models;
+using Caber.Repositories;
+using Caber.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Caber.Repositories
+namespace Caber
 {
-    public class DriverRepository(CaberContext context) : IRepository<int, Driver>
+    public class RideRepository(CaberContext context) : IRepository<int, Ride>
     {
-        public async Task<Driver> Add(Driver entity)
+        public async Task<Ride> Add(Ride entity)
         {
             try
             {
-                context.Drivers.Add(entity);
+                context.Rides.Add(entity);
                 await context.SaveChangesAsync();
+                return entity;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async Task<Ride> Delete(int key)
+        {
+            try
+            {
+                var ride = await GetByKey(key);
+                context.Rides.Remove(ride);
+                await context.SaveChangesAsync();
+                return ride;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<Ride>> GetAll()
+        {
+            try
+            {
+                var rides = await context.Rides.ToListAsync();
+
+                return rides;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Ride> GetByKey(int key)
+        {
+            try
+            {
+                var ride = await context.Rides.FindAsync(key);
+
+                return ride ?? throw new RideNotFoundException(key);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Ride> Update(Ride entity)
+        {
+            try
+            {
+                context.Rides.Update(entity);
+
+                await context.SaveChangesAsync();
+
                 return entity;
             }
             catch (Exception)
@@ -20,73 +85,6 @@ namespace Caber.Repositories
 
                 throw;
             }
-
-        }
-
-        public async Task<Driver> Delete(int key)
-        {
-            try
-            {
-                var driver = await GetByKey(key);
-                context.Drivers.Remove(driver);
-                await context.SaveChangesAsync();
-                return driver;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        public async Task<IEnumerable<Driver>> GetAll()
-        {
-            try
-            {
-                var drivers = await context.Drivers.ToListAsync();
-
-                return drivers;
-
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-        }
-
-        public async Task<Driver> GetByKey(int key)
-        {
-            try
-            {
-                var driver = await context.Drivers.Include(d => d.OwnedCabs).FirstOrDefaultAsync(d => d.Id == key);
-
-                return driver ?? throw new DriverNotFoundException(key);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
-        }
-
-        public async Task<Driver> Update(Driver entity)
-        {
-            try
-            {
-                context.Drivers.Update(entity);
-
-                await context.SaveChangesAsync();
-
-                return entity;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-
         }
     }
 }

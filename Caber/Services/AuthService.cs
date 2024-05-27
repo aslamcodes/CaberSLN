@@ -2,6 +2,7 @@
 using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.DTOs.Mappers;
+using Caber.Models.Enums;
 using Caber.Repositories;
 using Caber.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -50,7 +51,8 @@ namespace Caber.Services
                     Email = registerDto.Email,
                     FirstName = registerDto.FirstName,
                     PasswordHashKey = hMACSHA.Key,
-                    Password = hMACSHA.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password))
+                    Password = hMACSHA.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+                    UserType = UserTypeEnum.User,
                 };
 
                 user = await userRepository.Add(user);

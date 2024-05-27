@@ -33,6 +33,6 @@ services:
         networks:
          - caber
         volumes:
-         - db-data:/var/lib/mssql/data
+         - db-data:/var/opt/mssql
 volumes:
   db-data:  

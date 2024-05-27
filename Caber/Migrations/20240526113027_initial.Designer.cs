@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Caber.Migrations
 {
     [DbContext(typeof(CaberContext))]
-    [Migration("20240522094327_initial")]
+    [Migration("20240526113027_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -73,6 +73,32 @@ namespace Caber.Migrations
                     b.ToTable("Cabs");
                 });
 
+            modelBuilder.Entity("Caber.Models.Driver", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateOnly>("LicenseExpiryDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("LicenseNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("drivers", (string)null);
+                });
+
             modelBuilder.Entity("Caber.Models.DriverRating", b =>
                 {
                     b.Property<int>("Id")
@@ -127,6 +153,25 @@ namespace Caber.Migrations
                     b.HasIndex("PassengerId");
 
                     b.ToTable("FavoritePlaces");
+                });
+
+            modelBuilder.Entity("Caber.Models.Passenger", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("passengers", (string)null);
                 });
 
             modelBuilder.Entity("Caber.Models.Ride", b =>
@@ -232,29 +277,6 @@ namespace Caber.Migrations
                         .HasFilter("[Phone] IS NOT NULL");
 
                     b.ToTable("Users");
-
-                    b.UseTptMappingStrategy();
-                });
-
-            modelBuilder.Entity("Caber.Models.Driver", b =>
-                {
-                    b.HasBaseType("Caber.Models.User");
-
-                    b.Property<DateOnly>("LicenseExpiryDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("LicenseNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.ToTable("drivers", (string)null);
-                });
-
-            modelBuilder.Entity("Caber.Models.Passenger", b =>
-                {
-                    b.HasBaseType("Caber.Models.User");
-
-                    b.ToTable("passengers", (string)null);
                 });
 
             modelBuilder.Entity("Caber.Models.Cab", b =>
@@ -266,6 +288,17 @@ namespace Caber.Migrations
                         .IsRequired();
 
                     b.Navigation("Driver");
+                });
+
+            modelBuilder.Entity("Caber.Models.Driver", b =>
+                {
+                    b.HasOne("Caber.Models.User", "User")
+                        .WithOne("Driver")
+                        .HasForeignKey("Caber.Models.Driver", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Caber.Models.DriverRating", b =>
@@ -298,6 +331,17 @@ namespace Caber.Migrations
                     b.Navigation("Passenger");
                 });
 
+            modelBuilder.Entity("Caber.Models.Passenger", b =>
+                {
+                    b.HasOne("Caber.Models.User", "User")
+                        .WithOne("Passenger")
+                        .HasForeignKey("Caber.Models.Passenger", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Caber.Models.Ride", b =>
                 {
                     b.HasOne("Caber.Models.Cab", "Cab")
@@ -315,24 +359,6 @@ namespace Caber.Migrations
                     b.Navigation("Cab");
 
                     b.Navigation("Passenger");
-                });
-
-            modelBuilder.Entity("Caber.Models.Driver", b =>
-                {
-                    b.HasOne("Caber.Models.User", null)
-                        .WithOne()
-                        .HasForeignKey("Caber.Models.Driver", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Caber.Models.Passenger", b =>
-                {
-                    b.HasOne("Caber.Models.User", null)
-                        .WithOne()
-                        .HasForeignKey("Caber.Models.Passenger", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Caber.Models.Cab", b =>
@@ -354,6 +380,15 @@ namespace Caber.Migrations
                     b.Navigation("FavoritePlaces");
 
                     b.Navigation("Rides");
+                });
+
+            modelBuilder.Entity("Caber.Models.User", b =>
+                {
+                    b.Navigation("Driver")
+                        .IsRequired();
+
+                    b.Navigation("Passenger")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Caber.Migrations
 {
     [DbContext(typeof(CaberContext))]
-    [Migration("20240526105131_removeInheritance")]
-    partial class removeInheritance
+    [Migration("20240527072135_make-nullable")]
+    partial class makenullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,26 +189,25 @@ namespace Caber.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("Fare")
+                    b.Property<double?>("Fare")
                         .HasColumnType("float");
 
                     b.Property<string>("PassengerComment")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PassengerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("PassengerRating")
+                    b.Property<int?>("PassengerRating")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("RideDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("RideDistance")
+                    b.Property<float?>("RideDistance")
                         .HasColumnType("real");
 
                     b.Property<int>("RideStatus")

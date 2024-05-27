@@ -1,17 +1,17 @@
 ﻿using Caber.Contexts;
-using Caber.Exceptions;
 using Caber.Models;
+using Caber.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Caber.Repositories
+namespace Caber
 {
-    public class DriverRepository(CaberContext context) : IRepository<int, Driver>
+    public class CabRepository(CaberContext context) : IRepository<int, Cab>
     {
-        public async Task<Driver> Add(Driver entity)
+        public async Task<Cab> Add(Cab entity)
         {
             try
             {
-                context.Drivers.Add(entity);
+                context.Cabs.Add(entity);
                 await context.SaveChangesAsync();
                 return entity;
             }
@@ -20,17 +20,16 @@ namespace Caber.Repositories
 
                 throw;
             }
-
         }
 
-        public async Task<Driver> Delete(int key)
+        public async Task<Cab> Delete(int key)
         {
             try
             {
-                var driver = await GetByKey(key);
-                context.Drivers.Remove(driver);
+                var cab = await GetByKey(key);
+                context.Cabs.Remove(cab);
                 await context.SaveChangesAsync();
-                return driver;
+                return cab;
             }
             catch (Exception)
             {
@@ -38,13 +37,13 @@ namespace Caber.Repositories
             }
         }
 
-        public async Task<IEnumerable<Driver>> GetAll()
+        public async Task<IEnumerable<Cab>> GetAll()
         {
             try
             {
-                var drivers = await context.Drivers.ToListAsync();
+                var cabs = await context.Cabs.ToListAsync();
 
-                return drivers;
+                return cabs;
 
             }
             catch (Exception)
@@ -52,30 +51,31 @@ namespace Caber.Repositories
 
                 throw;
             }
-
         }
 
-        public async Task<Driver> GetByKey(int key)
+        public async Task<Cab> GetByKey(int key)
         {
             try
             {
-                var driver = await context.Drivers.Include(d => d.OwnedCabs).FirstOrDefaultAsync(d => d.Id == key);
+                var driver = await context.Cabs
+                                           .Include(c => c.Driver)
+                                           .Include(c => c.Rides)
+                                           .FirstOrDefaultAsync(c => c.Id == key);
 
-                return driver ?? throw new DriverNotFoundException(key);
+                return driver ?? throw new CabNotFoundException(key);
             }
             catch (Exception)
             {
 
                 throw;
             }
-
         }
 
-        public async Task<Driver> Update(Driver entity)
+        public async Task<Cab> Update(Cab entity)
         {
             try
             {
-                context.Drivers.Update(entity);
+                context.Cabs.Update(entity);
 
                 await context.SaveChangesAsync();
 
@@ -86,7 +86,6 @@ namespace Caber.Repositories
 
                 throw;
             }
-
         }
     }
 }

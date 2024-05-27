@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public required string LicenseNumber { get; set; }
 
-        public DateOnly LicenseExpiryDate { get; set; }
+        public DateTime LicenseExpiryDate { get; set; }
 
         public ICollection<Cab> OwnedCabs { get; set; }
 

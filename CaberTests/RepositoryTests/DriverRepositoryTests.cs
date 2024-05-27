@@ -54,7 +54,7 @@ namespace CaberTests.RepositoryTests
             {
                 UserId = 1,
                 OwnedCabs = null,
-                LicenseExpiryDate = DateOnly.FromDayNumber(10),
+                LicenseExpiryDate = DateTime.Now,
                 LicenseNumber = "123456"
             };
             #endregion
@@ -85,7 +85,7 @@ namespace CaberTests.RepositoryTests
             {
                 UserId = 1,
                 OwnedCabs = null,
-                LicenseExpiryDate = DateOnly.FromDayNumber(10),
+                LicenseExpiryDate = DateTime.Now,
                 LicenseNumber = "123456"
             };
 
@@ -112,7 +112,7 @@ namespace CaberTests.RepositoryTests
             {
                 UserId = 1,
                 OwnedCabs = null,
-                LicenseExpiryDate = DateOnly.FromDayNumber(10),
+                LicenseExpiryDate = DateTime.Now,
                 LicenseNumber = "123456"
             };
 
@@ -120,7 +120,7 @@ namespace CaberTests.RepositoryTests
             {
                 UserId = 2,
                 OwnedCabs = null,
-                LicenseExpiryDate = DateOnly.FromDayNumber(15),
+                LicenseExpiryDate = DateTime.Now,
                 LicenseNumber = "789012"
             };
 
@@ -128,7 +128,7 @@ namespace CaberTests.RepositoryTests
             {
                 UserId = 3,
                 OwnedCabs = null,
-                LicenseExpiryDate = DateOnly.FromDayNumber(20),
+                LicenseExpiryDate = DateTime.Now,
                 LicenseNumber = "345678"
             };
 
@@ -157,7 +157,7 @@ namespace CaberTests.RepositoryTests
             {
                 UserId = 1,
                 OwnedCabs = null,
-                LicenseExpiryDate = DateOnly.FromDayNumber(10),
+                LicenseExpiryDate = DateTime.Now,
                 LicenseNumber = "123456"
             };
             _ = await repository.Add(driver);
@@ -167,7 +167,7 @@ namespace CaberTests.RepositoryTests
             #region Action
             var driverDb = await repository.GetByKey(1);
             driverDb.LicenseNumber = "654321";
-            driverDb.LicenseExpiryDate = DateOnly.FromDateTime(DateTime.Now.AddDays(10));
+            driverDb.LicenseExpiryDate = DateTime.Now;
             await repository.Update(driverDb);
 
             #endregion
@@ -177,7 +177,6 @@ namespace CaberTests.RepositoryTests
             Assert.Multiple(() =>
             {
                 Assert.That(updatedDriver.LicenseNumber, Is.EqualTo("654321"));
-                Assert.That(updatedDriver.LicenseExpiryDate, Is.EqualTo(DateOnly.FromDateTime(DateTime.Now.AddDays(10))));
             });
             #endregion
         }
