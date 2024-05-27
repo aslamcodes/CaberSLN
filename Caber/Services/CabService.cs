@@ -8,7 +8,9 @@ using Caber.Repositories;
 
 namespace Caber
 {
-    public class CabService(IRepository<int, Cab> cabRepository, IRepository<int, Ride> rideRepository, IRepository<int, Driver> driverRepository) : ICabService
+    public class CabService(IRepository<int, Cab> cabRepository,
+                            IRepository<int, Ride> rideRepository,
+                            IRepository<int, Driver> driverRepository) : ICabService
     {
         public async Task<BookCabResponseDto> BookCab(BookCabRequestDto request)
         {
@@ -86,6 +88,38 @@ namespace Caber
                 var registeredCab = await cabRepository.Add(cab);
 
                 return registeredCab;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public Task<Cab> UpdateCabLocation(int cabId, string location)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<UpdateCabResponseDto> UpdateCabProfile(UpdateCabRequestDto cabDetails)
+        {
+            try
+            {
+                var cab = await cabRepository.GetByKey(cabDetails.CabId);
+
+                if (cab is null)
+                {
+                    throw new CabNotFoundException(cabDetails.CabId);
+                }
+
+                cab.Color = cabDetails.Color;
+                cab.SeatingCapacity = cabDetails.SeatingCapacity;
+                cab.Model = cabDetails.Model;
+                cab.Make = cabDetails.Make;
+
+                var updatedCab = await cabRepository.Update(cab);
+
+                return updatedCab.MapToUpdateCabResponseDto();
             }
             catch (Exception)
             {

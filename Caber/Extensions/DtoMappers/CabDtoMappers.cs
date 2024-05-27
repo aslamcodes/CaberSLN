@@ -14,5 +14,17 @@ namespace Caber.Models.DTOs.Mappers
                 Status = cab.Status
             };
         }
+
+        public static UpdateCabResponseDto MapToUpdateCabResponseDto(this Cab cab)
+        {
+            return new UpdateCabResponseDto
+            {
+                CabId = cab.Id,
+                Color = cab.Color,
+                SeatingCapacity = cab.SeatingCapacity,
+                Model = cab.Model,
+                Make = cab.Make
+            };
+        }
     }
 }

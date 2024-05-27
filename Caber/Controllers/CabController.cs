@@ -101,5 +101,33 @@ namespace Caber.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpPut("update-cab")]
+        [ProducesResponseType(typeof(CabResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<CabResponseDto>> UpdateCab([FromBody] UpdateCabRequestDto request)
+        {
+            try
+            {
+                var updatedCab = await cabService.UpdateCabProfile(request);
+
+                return Ok(updatedCab);
+            }
+            catch (CabNotFoundException)
+            {
+                return NotFound(new ErrorModel("Cab not found", StatusCodes.Status404NotFound));
+            }
+            catch (DriverNotFoundException)
+            {
+                return NotFound(new ErrorModel("Driver not found", StatusCodes.Status404NotFound));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+
     }
 }
+

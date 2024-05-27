@@ -11,5 +11,9 @@ namespace Caber.Controllers
         Task<DriverDetailsResponseDto> GetDriverDetails(int cabId);
 
         Task<Cab> RegisterCab(Cab cab);
+
+        Task<Cab> UpdateCabLocation(int cabId, string location);
+
+        Task<UpdateCabResponseDto> UpdateCabProfile(UpdateCabRequestDto cab);
     }
 }

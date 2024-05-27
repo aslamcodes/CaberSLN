@@ -3,7 +3,7 @@
     public class ErrorModel(string message, int code)
     {
 
-        public string Message = message;
-        public int StatusCode = code;
+        public string Message { get; set; } = message;
+        public int StatusCode { get; set; } = code;
     }
 }
