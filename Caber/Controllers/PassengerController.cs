@@ -29,5 +29,26 @@ namespace Caber.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpPut("cancel-ride")]
+        [ProducesResponseType(typeof(CancelRideResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<CancelRideResponseDto>> CancelRide([FromBody] CancelRideRequestDto request)
+        {
+            try
+            {
+                var cancelledRide = await rideService.CancelRide(request);
+
+                return cancelledRide;
+            }
+            catch (RideNotFoundException)
+            {
+                return NotFound(new ErrorModel("Ride not found", StatusCodes.Status404NotFound));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

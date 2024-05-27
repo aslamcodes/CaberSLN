@@ -36,5 +36,14 @@ namespace Caber.Extensions.DtoMappers
                 PassengerComment = ride.PassengerComment
             };
         }
+
+        public static CancelRideResponseDto MapToCancelRideResponseDto(this Ride ride)
+        {
+            return new CancelRideResponseDto()
+            {
+                RideId = ride.Id,
+                Status = ride.RideStatus.ToString()
+            };
+        }
     }
 }
