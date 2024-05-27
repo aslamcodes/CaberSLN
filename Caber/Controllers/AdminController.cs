@@ -10,7 +10,7 @@ namespace Caber.Controllers
     [Authorize(Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class AdminController(IAdminService adminService) : Controller
+    public class AdminController(IAdminService adminService, ILogger<AdminController> logger) : Controller
     {
         [HttpPut("verify-driver")]
         [ProducesResponseType(typeof(VerifyDriverResponseDto), StatusCodes.Status200OK)]
@@ -23,6 +23,7 @@ namespace Caber.Controllers
             }
             catch (DriverNotFoundException e)
             {
+                logger.LogError(e, "Driver not found");
                 return NotFound(new ErrorModel(e.Message, StatusCodes.Status404NotFound));
             }
             catch (Exception)
