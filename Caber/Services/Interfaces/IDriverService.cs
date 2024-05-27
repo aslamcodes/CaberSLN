@@ -1,5 +1,4 @@
-﻿using Caber.Controllers;
-using Caber.Models.DTOs;
+﻿using Caber.Models.DTOs;
 
 namespace Caber.Services.Interfaces
 {
