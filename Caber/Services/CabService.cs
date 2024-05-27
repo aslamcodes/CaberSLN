@@ -55,5 +55,20 @@ namespace Caber
             }
         }
 
+        public async Task<DriverDetailsResponseDto> GetDriverDetails(int cabId)
+        {
+            try
+            {
+                var cab = await cabRepository.GetByKey(cabId);
+
+                var driver = cab.Driver.ToDriverDetailsResponseDto();
+
+                return driver;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }

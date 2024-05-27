@@ -25,7 +25,7 @@ namespace Caber.Services
                 {
                     UserId = existingUser.Id,
                     LicenseNumber = driver.LicenseNumber,
-                    LicenseExpiryDate = DateOnly.FromDateTime(driver.LicenseExpiryDate)
+                    LicenseExpiryDate = driver.LicenseExpiryDate
                 };
 
                 var createdDriver = await driverRepository.Add(newDriver);

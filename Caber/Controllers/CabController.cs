@@ -18,6 +18,10 @@ namespace Caber.Controllers
 
                 return Ok(cabs);
             }
+            catch (CabNotFoundException)
+            {
+                return NotFound(new ErrorModel("Cab not found", StatusCodes.Status404NotFound));
+            }
             catch (Exception)
             {
                 return StatusCode(500);
@@ -40,5 +44,27 @@ namespace Caber.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpGet("driver-details")]
+        [ProducesResponseType(typeof(DriverDetailsResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<DriverDetailsResponseDto>> GetDriverDetails([FromQuery] int cabId)
+        {
+            try
+            {
+                var driverDetails = await cabService.GetDriverDetails(cabId);
+
+                return Ok(driverDetails);
+            }
+            catch (CabNotFoundException)
+            {
+                return NotFound(new ErrorModel("Cab not found", StatusCodes.Status404NotFound));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
     }
 }
