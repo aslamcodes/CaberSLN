@@ -1,7 +1,7 @@
 ﻿using Caber.Contexts;
-using Caber.Exceptions;
 using Caber.Models;
 using Caber.Repositories;
+using Caber.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Caber
@@ -61,7 +61,7 @@ namespace Caber
             {
                 var ride = await context.Rides.FindAsync(key);
 
-                return ride ?? throw new DriverNotFoundException(key);
+                return ride ?? throw new RideNotFoundException(key);
             }
             catch (Exception)
             {

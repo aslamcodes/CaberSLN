@@ -103,6 +103,7 @@ namespace Caber
             builder.Services.AddScoped<IDriverService, DriverService>();
             builder.Services.AddScoped<IPassengerService, PassengerService>();
             builder.Services.AddScoped<ICabService, CabService>();
+            builder.Services.AddScoped<IRideService, RideService>();
             #endregion
             #endregion
 

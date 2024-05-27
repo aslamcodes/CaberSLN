@@ -3,7 +3,7 @@ using Caber.Models;
 
 namespace Caber.Extensions.DtoMappers
 {
-    public static class RideMapper
+    public static class RideDtoMappers
     {
         public static BookCabResponseDto MapToBookCabResponseDto(this Ride ride, Cab cab)
         {
@@ -14,6 +14,16 @@ namespace Caber.Extensions.DtoMappers
                 PickupLocation = ride.StartLocation,
                 DropLocation = ride.EndLocation,
                 Status = ride.RideStatus.ToString()
+            };
+        }
+
+        public static RateRideResponseDto MapToRateRideResponseDto(this Ride ride)
+        {
+            return new RateRideResponseDto()
+            {
+                RideId = ride.Id,
+                PassengerRating = ride.PassengerRating,
+                PassengerComment = ride.PassengerComment
             };
         }
     }
