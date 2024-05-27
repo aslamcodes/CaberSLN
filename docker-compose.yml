@@ -22,6 +22,8 @@ services:
      - DB_SA_PASSWORD=Password123
     networks:
       - caber
+    volumes:
+      - logs:/caberlogs
   caber-db:
         container_name: caberdb
         image: mcr.microsoft.com/mssql/server:2022-latest
@@ -36,3 +38,4 @@ services:
          - db-data:/var/opt/mssql
 volumes:
   db-data:  
+  logs:
