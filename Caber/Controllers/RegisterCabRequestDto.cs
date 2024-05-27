@@ -1,9 +1,7 @@
-﻿namespace Caber.Models
+﻿namespace Caber.Controllers
 {
-    public class Cab
+    public class RegisterCabRequestDto
     {
-        public int Id { get; set; }
-
         public string RegistrationNumber { get; set; }
 
         public string Model { get; set; }
@@ -12,16 +10,9 @@
 
         public string Color { get; set; }
 
-        public string Status { get; set; }
-
-        public string? Location { get; set; }
-
         public int SeatingCapacity { get; set; }
 
         public int DriverId { get; set; }
 
-        public Driver Driver { get; set; }
-
-        public ICollection<Ride> Rides { get; set; }
     }
 }

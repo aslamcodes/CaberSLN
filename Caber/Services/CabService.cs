@@ -1,4 +1,5 @@
 ﻿using Caber.Controllers;
+using Caber.Exceptions;
 using Caber.Extensions;
 using Caber.Extensions.DtoMappers;
 using Caber.Models;
@@ -7,7 +8,7 @@ using Caber.Repositories;
 
 namespace Caber
 {
-    public class CabService(IRepository<int, Cab> cabRepository, IRepository<int, Ride> rideRepository) : ICabService
+    public class CabService(IRepository<int, Cab> cabRepository, IRepository<int, Ride> rideRepository, IRepository<int, Driver> driverRepository) : ICabService
     {
         public async Task<BookCabResponseDto> BookCab(BookCabRequestDto request)
         {
@@ -67,6 +68,28 @@ namespace Caber
             }
             catch (Exception)
             {
+                throw;
+            }
+        }
+
+        public async Task<Cab> RegisterCab(Cab cab)
+        {
+            try
+            {
+                var driver = await driverRepository.GetByKey(cab.DriverId);
+
+                if (driver is null)
+                {
+                    throw new DriverNotFoundException(cab.DriverId);
+                }
+
+                var registeredCab = await cabRepository.Add(cab);
+
+                return registeredCab;
+            }
+            catch (Exception)
+            {
+
                 throw;
             }
         }

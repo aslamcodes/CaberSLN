@@ -10,6 +10,8 @@ namespace Caber.Services
 {
     public class DriverService(IRepository<int, Driver> driverRepository, IRepository<int, User> userRepository) : IDriverService
     {
+
+
         public async Task<DriverRegisterResponseDto> RegisterDriver(DriverRegisterRequestDto driver)
         {
 

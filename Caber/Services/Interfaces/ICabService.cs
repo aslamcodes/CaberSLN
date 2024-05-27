@@ -1,4 +1,6 @@
-﻿namespace Caber.Controllers
+﻿using Caber.Models;
+
+namespace Caber.Controllers
 {
     public interface ICabService
     {
@@ -7,5 +9,7 @@
         Task<BookCabResponseDto> BookCab(BookCabRequestDto request);
 
         Task<DriverDetailsResponseDto> GetDriverDetails(int cabId);
+
+        Task<Cab> RegisterCab(Cab cab);
     }
 }

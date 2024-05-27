@@ -1,5 +1,6 @@
 ﻿using Caber;
 using Caber.Contexts;
+using Caber.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaberTests.ServicesTests
@@ -27,7 +28,9 @@ namespace CaberTests.ServicesTests
             SetContext(new CaberContext(options));
             GetContext().Database.EnsureCreated();
 
-            cabService = new CabService(new CabRepository(GetContext()), new RideRepository(GetContext()));
+            cabService = new CabService(new CabRepository(GetContext()),
+                                        new RideRepository(GetContext()),
+                                        new DriverRepository(GetContext()));
         }
     }
 }
