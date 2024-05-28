@@ -2,6 +2,8 @@
 using Caber.Contexts;
 using Caber.Controllers;
 using Caber.Models;
+using Caber.Models.DTOs;
+using Caber.Models.Enums;
 using Caber.Services;
 using Caber.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +14,7 @@ namespace CaberTests.ServicesTests
     {
         private CaberContext context;
 
-        private IRideService RideService;
+        private IRideService rideService;
         private CaberContext GetContext()
         {
             return context;
@@ -46,7 +48,7 @@ namespace CaberTests.ServicesTests
             GetContext().Users.Add(user);
             GetContext().SaveChanges();
 
-            RideService = new RideService(new RideRepository(GetContext()));
+            rideService = new RideService(new RideRepository(GetContext()));
         }
 
         [Test]
@@ -105,7 +107,7 @@ namespace CaberTests.ServicesTests
                 RideId = 1
             };
 
-            var result = await RideService.CancelRide(cancelRideRequest);
+            var result = await rideService.CancelRide(cancelRideRequest);
             #endregion
 
             #region Assert
@@ -165,7 +167,7 @@ namespace CaberTests.ServicesTests
             #endregion
 
             #region Act
-            var result = await RideService.RateRide(new RateRideRequestDto()
+            var result = await rideService.RateRide(new RateRideRequestDto()
             {
                 RideId = 1,
                 Rating = 5,
@@ -183,5 +185,64 @@ namespace CaberTests.ServicesTests
             });
             #endregion
         }
+
+
+        [Test]
+        public async Task AcceptRideTest()
+        {
+            #region Arrange
+            var cab = new Cab()
+            {
+                DriverId = 1,
+                Location = "123",
+                Color = "Red",
+                Make = "Toyota",
+                Model = "Corolla",
+                RegistrationNumber = "123",
+                Status = "Active"
+            };
+
+            GetContext().Cabs.Add(cab);
+
+            var passenger = new Passenger()
+            {
+                UserId = 2
+            };
+
+            GetContext().Passengers.Add(passenger);
+
+            var ride = new Ride()
+            {
+                PassengerId = 1,
+                CabId = 1,
+                PassengerComment = "Great",
+                EndLocation = "123",
+                StartLocation = "123"
+            };
+
+            GetContext().Rides.Add(ride);
+            GetContext().SaveChanges();
+
+            AcceptRideRequestDto request = new()
+            {
+                RideId = 1
+            };
+            #endregion
+
+            #region Act
+            var result = await rideService.AcceptRide(request);
+            #endregion
+
+            #region Assert
+            Assert.That(result, Is.Not.Null);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.RideId, Is.EqualTo(1));
+                Assert.That(result.Status, Is.EqualTo(RideStatusEnum.Accepted.ToString()));
+            });
+            #endregion
+        }
+
     }
 }

@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caber.Services
 {
-    public class DriverService(IRepository<int, Driver> driverRepository, IRepository<int, User> userRepository, IRepository<int, Cab> cabRepository) : IDriverService
+    public class DriverService(IRepository<int, Driver> driverRepository,
+                               IRepository<int, User> userRepository,
+                               IRepository<int, Cab> cabRepository) : IDriverService
     {
         public async Task<DriverRegisterResponseDto> RegisterDriver(DriverRegisterRequestDto driver)
         {

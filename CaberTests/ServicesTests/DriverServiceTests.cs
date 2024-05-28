@@ -5,6 +5,7 @@ using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Repositories;
 using Caber.Services;
+using Caber.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaberTests.ServicesTests
@@ -12,7 +13,7 @@ namespace CaberTests.ServicesTests
     public class DriverServiceTests
     {
         private CaberContext context;
-        private DriverService driverService;
+        private IDriverService driverService;
         private CaberContext GetContext()
         {
             return context;
@@ -43,11 +44,24 @@ namespace CaberTests.ServicesTests
                 Phone = "123123",
                 Address = "123"
             };
+            var user2 = new User()
+            {
+                Email = "1232@gmail.com",
+                FirstName = "John",
+                Password = new byte[] { 1, 2, 3, 4 },
+                PasswordHashKey = new byte[] { 1, 2, 3, 4 },
+                Phone = "123123",
+                Address = "123"
+            };
             GetContext().Users.Add(user);
+            GetContext().Users.Add(user2);
             GetContext().SaveChanges();
             #endregion
 
-            driverService = new DriverService(new DriverRepository(GetContext()), new UserRepository(GetContext()), new CabRepository(GetContext()));
+            driverService = new DriverService(new DriverRepository(GetContext()),
+                                              new UserRepository(GetContext()),
+                                              new CabRepository(GetContext())
+                                              );
         }
 
         [Test]

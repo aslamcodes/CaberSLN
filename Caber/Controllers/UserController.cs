@@ -1,6 +1,7 @@
 ﻿using Caber.Exceptions;
 using Caber.Models;
 using Caber.Models.DTOs;
+using Caber.Services;
 using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,9 @@ namespace Caber.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(IDriverService driverService, IPassengerService passengerService) : Controller
+    public class UserController(IDriverService driverService,
+                                IPassengerService passengerService,
+                                ILogger<UserController> logger) : Controller
     {
         [HttpPost("register-driver")]
         [ProducesResponseType(typeof(DriverRegisterResponseDto), StatusCodes.Status200OK)]
@@ -20,19 +23,22 @@ namespace Caber.Controllers
             try
             {
                 var registeredDriver = await driverService.RegisterDriver(driver);
-
+                logger.LogInformation("Driver Registered");
                 return Ok(registeredDriver);
             }
-            catch (UserNotFoundException)
+            catch (UserNotFoundException e)
             {
+                logger.LogError($"User for id {driver.UserId} not found", e.StackTrace);
                 return BadRequest(new ErrorModel("User not found", StatusCodes.Status400BadRequest));
             }
-            catch (DuplicatePassengerException)
+            catch (DuplicateDriverException e)
             {
+                logger.LogError($"Driver is already registered on {driver.UserId}", e.StackTrace);
                 return BadRequest(new ErrorModel("Passenger already registered", StatusCodes.Status400BadRequest));
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                logger.LogError(e.Message, e.StackTrace);
                 return StatusCode(500);
             }
         }
@@ -45,19 +51,23 @@ namespace Caber.Controllers
             try
             {
                 var registeredPassenger = await passengerService.RegisterPassenger(passenger);
-
+                logger.LogInformation($"Passenger register for user with id ${passenger.UserId}");
                 return Ok(registeredPassenger);
             }
             catch (UserNotFoundException)
             {
+
+                logger.LogError($"User for id {passenger.UserId} not found");
                 return BadRequest(new ErrorModel("User not found", StatusCodes.Status400BadRequest));
             }
             catch (DuplicatePassengerException)
             {
+                logger.LogError($"Passenger is already registered on {passenger.UserId}");
                 return BadRequest(new ErrorModel("Passenger already registered", StatusCodes.Status400BadRequest));
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                logger.LogError(e.Message, e.StackTrace);
                 return StatusCode(500);
             }
         }

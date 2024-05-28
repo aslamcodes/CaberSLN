@@ -1,5 +1,5 @@
-﻿using Caber.Models;
-using Caber.Services;
+﻿using Caber.Exceptions;
+using Caber.Models;
 using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,9 @@ namespace Caber.Controllers
     [Authorize(Policy = "Passenger")]
     [Route("api/[controller]")]
     [ApiController]
-    public class PassengerController(IRideService rideService, ICabService cabService) : Controller
+    public class PassengerController(IRideService rideService,
+                                     ICabService cabService,
+                                     ILogger<PassengerController> logger) : Controller
     {
         [HttpPost("rate-ride")]
         [ProducesResponseType(typeof(RateRideResponseDto), StatusCodes.Status200OK)]
@@ -19,15 +21,17 @@ namespace Caber.Controllers
             try
             {
                 var ratedRide = await rideService.RateRide(request);
-
+                logger.LogInformation($"Ride with ride id {request.RideId} is rated by passenger");
                 return ratedRide;
             }
             catch (RideNotFoundException)
             {
+                logger.LogInformation($"Ride with ride id {request.RideId} is not found");
                 return NotFound(new ErrorModel("Ride not found", StatusCodes.Status404NotFound));
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                logger.LogError(e.Message, e.StackTrace);
                 return StatusCode(500);
             }
         }

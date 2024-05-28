@@ -1,4 +1,5 @@
 ﻿using Caber.Controllers;
+using Caber.Models.DTOs;
 
 namespace Caber.Services.Interfaces
 {
@@ -7,5 +8,8 @@ namespace Caber.Services.Interfaces
         Task<RateRideResponseDto> RateRide(RateRideRequestDto rateRide);
 
         Task<CancelRideResponseDto> CancelRide(CancelRideRequestDto cancelRide);
+
+        Task<AcceptRideResponseDto> AcceptRide(AcceptRideRequestDto request);
+
     }
 }

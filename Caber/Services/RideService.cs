@@ -1,6 +1,8 @@
 ﻿using Caber.Controllers;
+using Caber.Exceptions;
 using Caber.Extensions.DtoMappers;
 using Caber.Models;
+using Caber.Models.DTOs;
 using Caber.Models.Enums;
 using Caber.Repositories;
 using Caber.Services.Interfaces;
@@ -41,6 +43,30 @@ namespace Caber.Services
 
                 return ratedRide.MapToRateRideResponseDto();
 
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+
+        public async Task<AcceptRideResponseDto> AcceptRide(AcceptRideRequestDto request)
+        {
+            try
+            {
+                var ride = await rideRepository.GetByKey(request.RideId);
+
+                ride.RideStatus = RideStatusEnum.Accepted;
+
+                var acceptedRide = await rideRepository.Update(ride);
+
+                return new AcceptRideResponseDto()
+                {
+                    RideId = ride.Id,
+                    Status = ride.RideStatus.ToString()
+                };
             }
             catch (Exception)
             {
