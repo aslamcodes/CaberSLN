@@ -15,7 +15,6 @@ namespace CaberTests.ServicesTests
         {
             return context;
         }
-
         private void SetContext(CaberContext value)
         {
             context = value;
