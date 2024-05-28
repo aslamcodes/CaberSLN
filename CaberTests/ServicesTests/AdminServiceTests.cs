@@ -66,7 +66,7 @@ namespace CaberTests.ServicesTests
             await GetContext().SaveChangesAsync();
             #endregion
 
-            #region
+            #region Act
             var request = new VerifyDriverRequestDto()
             {
                 DriverId = 1
@@ -100,9 +100,9 @@ namespace CaberTests.ServicesTests
 
 
         [TearDown]
-        public async Task TearDown()
+        public void TearDown()
         {
-            await GetContext().Database.EnsureDeletedAsync();
+            GetContext().Database.EnsureDeleted();
         }
     }
 }
