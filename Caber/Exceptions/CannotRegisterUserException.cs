@@ -1,7 +1,7 @@
 ﻿namespace Caber.Exceptions
 {
     [Serializable]
-    internal class CannotRegisterUserException : Exception
+    public class CannotRegisterUserException : Exception
     {
         private readonly string message;
         public CannotRegisterUserException()

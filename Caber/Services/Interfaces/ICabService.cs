@@ -1,4 +1,5 @@
 ﻿using Caber.Models;
+using Caber.Models.DTOs;
 
 namespace Caber.Controllers
 {

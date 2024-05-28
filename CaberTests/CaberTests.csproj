@@ -11,9 +11,12 @@
 
 	<ItemGroup>
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />
+		<PackageReference Include="EntityFramework" Version="5.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.5" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+		<PackageReference Include="Moq" Version="4.20.70" />
 		<PackageReference Include="NUnit" Version="3.14.0" />
 		<PackageReference Include="NUnit.Analyzers" Version="3.9.0" />
 		<PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
@@ -25,6 +28,25 @@
 
 	<ItemGroup>
 		<Using Include="NUnit.Framework" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="database.db">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>database.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="database.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>database.db</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

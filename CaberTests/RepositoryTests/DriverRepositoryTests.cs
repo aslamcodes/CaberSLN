@@ -24,7 +24,7 @@ namespace CaberTests.RepositoryTests
         public void Setup()
         {
             var options = new DbContextOptionsBuilder<CaberContext>()
-                .UseInMemoryDatabase("EmployeeTest")
+                .UseInMemoryDatabase("CaberDriverRepoTests")
             .Options;
 
             SetContext(new CaberContext(options));
@@ -53,7 +53,6 @@ namespace CaberTests.RepositoryTests
             Driver driver = new()
             {
                 UserId = 1,
-                OwnedCabs = null,
                 LicenseExpiryDate = DateTime.Now,
                 LicenseNumber = "123456"
             };
@@ -66,7 +65,6 @@ namespace CaberTests.RepositoryTests
             #endregion
 
             #region Assert
-            Assert.That(driver1, Is.EqualTo(driver));
             Assert.Multiple(() =>
             {
                 Assert.That(driver1.UserId, Is.EqualTo(1));

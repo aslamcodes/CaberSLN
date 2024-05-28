@@ -3,7 +3,7 @@
 namespace Caber.Exceptions
 {
     [Serializable]
-    internal class UnauthorizedUserException : Exception
+    public class UnauthorizedUserException : Exception
     {
         public UnauthorizedUserException()
         {

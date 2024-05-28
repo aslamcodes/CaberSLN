@@ -1,4 +1,4 @@
-﻿namespace Caber.Controllers
+﻿namespace Caber.Models.DTOs
 {
     public class UpdateCabResponseDto
     {
