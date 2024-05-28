@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Caber.Services
 {
-    class AuthService(ITokenService tokenService, IRepository<int, User> userRepository) : IAuthService
+    public class AuthService(ITokenService tokenService, IRepository<int, User> userRepository) : IAuthService
     {
         public async Task<AuthResponseDto> Login(LoginRequestDto loginDto)
         {

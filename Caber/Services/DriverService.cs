@@ -20,8 +20,6 @@ namespace Caber.Services
 
                 existingUser.UserType = UserTypeEnum.Driver;
 
-                await userRepository.Update(existingUser);
-
                 var newDriver = new Driver
                 {
                     UserId = existingUser.Id,
@@ -30,6 +28,8 @@ namespace Caber.Services
                 };
 
                 var createdDriver = await driverRepository.Add(newDriver);
+
+                await userRepository.Update(existingUser);
 
                 return createdDriver.ToDriverRegisterResponseDto();
 

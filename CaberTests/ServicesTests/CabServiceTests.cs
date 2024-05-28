@@ -15,7 +15,6 @@ namespace CaberTests.ServicesTests
         {
             return context;
         }
-
         private void SetContext(CaberContext value)
         {
             context = value;
@@ -24,7 +23,7 @@ namespace CaberTests.ServicesTests
         public void Setup()
         {
             var options = new DbContextOptionsBuilder<CaberContext>()
-               .UseInMemoryDatabase("EmployeeTest")
+               .UseInMemoryDatabase("CaberCabServiceTests")
            .Options;
 
             SetContext(new CaberContext(options));

@@ -14,6 +14,6 @@
         public int UserId { get; set; }
         public User User { get; set; }
 
-        public bool IsVerified { get; set; }
+        public bool IsVerified { get; set; } = false;
     }
 }
