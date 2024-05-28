@@ -97,9 +97,22 @@ namespace Caber
             }
         }
 
-        public Task<Cab> UpdateCabLocation(int cabId, string location)
+        public async Task<Cab> UpdateCabLocation(int cabId, string location)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var cab = await cabRepository.GetByKey(cabId) ?? throw new CabNotFoundException(cabId);
+
+                cab.Location = location;
+
+                return await cabRepository.Update(cab);
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<UpdateCabResponseDto> UpdateCabProfile(UpdateCabRequestDto cabDetails)
@@ -107,10 +120,10 @@ namespace Caber
             try
             {
                 var cab = await cabRepository.GetByKey(cabDetails.CabId) ?? throw new CabNotFoundException(cabDetails.CabId);
-                if (cabDetails.Color == string.Empty) cab.Color = cabDetails.Color;
+                if (cabDetails.Color != string.Empty) cab.Color = cabDetails.Color;
                 if (cabDetails.SeatingCapacity > 0) cab.SeatingCapacity = cabDetails.SeatingCapacity;
-                if (cabDetails.Model == string.Empty) cab.Model = cabDetails.Model;
-                if (cabDetails.Make == string.Empty) cab.Make = cabDetails.Make;
+                if (cabDetails.Model != string.Empty) cab.Model = cabDetails.Model;
+                if (cabDetails.Make != string.Empty) cab.Make = cabDetails.Make;
 
                 var updatedCab = await cabRepository.Update(cab);
 
