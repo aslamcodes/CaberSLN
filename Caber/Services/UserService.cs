@@ -7,6 +7,29 @@ namespace Caber.Services
 {
     public class UserService(IRepository<int, User> userRepository) : IUserService
     {
+        public async Task<UserProfileResponseDto> GetUserProfile(int userId)
+        {
+            try
+            {
+                var user = await userRepository.GetByKey(userId);
+
+                return new UserProfileResponseDto()
+                {
+                    Address = user.Address,
+                    FirstName = user.FirstName,
+                    Id = user.Id,
+                    LastName = user.LastName,
+                    Phone = user.Phone,
+                    Email = user.Email
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<UserProfileUpdateResponseDto> UpdateUserProfile(UserProfileUpdateRequestDto request)
         {
             try

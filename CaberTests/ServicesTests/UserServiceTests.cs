@@ -91,6 +91,28 @@ namespace CaberTests.ServicesTests
 
             #endregion
         }
+        [Test]
+        public async Task GetUserProfileTest()
+        {
+            #region Arrange
+            var userId = 1;
+            #endregion
+
+            #region Act 
+            var user = await userService.GetUserProfile(userId);
+            #endregion
+
+            #region Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(user.FirstName, Is.EqualTo("John"));
+                Assert.That(user.LastName, Is.Null);
+                Assert.That(user.Address, Is.EqualTo("123"));
+                Assert.That(user.Phone, Is.EqualTo("123123"));
+            });
+
+            #endregion
+        }
 
         [TearDown]
         public void TearDown()

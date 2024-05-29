@@ -95,5 +95,28 @@ namespace Caber.Controllers
                 return StatusCode(500);
             }
         }
+
+        [HttpGet("profile")]
+        [ProducesResponseType(typeof(UserProfileResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<UserProfileResponseDto>> GetProfile([FromQuery] int userId)
+        {
+            try
+            {
+                var profile = await userService.GetUserProfile(userId);
+                logger.LogInformation($"Profile retrieved for user with id ${userId}");
+                return Ok(profile);
+            }
+            catch (UserNotFoundException)
+            {
+                logger.LogError($"User for id {userId} not found");
+                return BadRequest(new ErrorModel("User not found", StatusCodes.Status400BadRequest));
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message, e.StackTrace);
+                return StatusCode(500);
+            }
+        }
     }
 }
