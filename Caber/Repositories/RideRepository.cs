@@ -59,7 +59,7 @@ namespace Caber
         {
             try
             {
-                var ride = await context.Rides.FindAsync(key);
+                var ride = await context.Rides.Include(r => r.Cab).FirstOrDefaultAsync(r => r.Id == key);
 
                 return ride ?? throw new RideNotFoundException(key);
             }

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caber.Services
 {
-    public class PassengerService(IRepository<int, Passenger> repository, IRepository<int, User> userRepository) : IPassengerService
+    public class PassengerService(IRepository<int, Passenger> repository, IRepository<int, User> userRepository, IRepository<int, Ride> rideRepository) : IPassengerService
     {
         public async Task<PassengerRegisterResponseDto> RegisterPassenger(PassengerRegisterRequestDto passenger)
         {
@@ -33,6 +33,34 @@ namespace Caber.Services
             catch (DbUpdateException)
             {
                 throw new DuplicatePassengerException();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<RideResponseDto> InitiateRide(InitiatedRideRequestDto request)
+        {
+            try
+            {
+                var ride = await rideRepository.GetByKey(request.RideId);
+                if (ride.RideStatus != RideStatusEnum.Accepted)
+                {
+                    throw new CannotInitiateRide(ride.RideStatus.ToString());
+                }
+                ride.RideStatus = RideStatusEnum.InProgress;
+                ride.StartTime = DateTime.Now;
+                await rideRepository.Update(ride);
+
+                return new RideResponseDto()
+                {
+                    DriverId = ride.Cab.Id,
+                    PassengerId = ride.PassengerId,
+                    RideId = ride.Id,
+                    Status = ride.RideStatus.ToString()
+                };
             }
             catch (Exception)
             {
