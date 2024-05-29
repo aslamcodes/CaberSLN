@@ -115,7 +115,7 @@ namespace Caber
             builder.Services.AddAuthorizationBuilder()
             .AddPolicy("Admin", policy => policy.RequireRole("Admin"))
             .AddPolicy("Driver", policy => policy.RequireRole("Driver"))
-            .AddPolicy("Passenger", policy => policy.RequireClaim("Passenger"));
+            .AddPolicy("Passenger", policy => policy.RequireRole("Passenger"));
             #endregion
 
             var app = builder.Build();

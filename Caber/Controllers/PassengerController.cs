@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Caber.Controllers
 {
-    [Authorize(Policy = "Passenger")]
+
     [Route("api/[controller]")]
     [ApiController]
     public class PassengerController(IRideService rideService,
                                      ICabService cabService,
                                      ILogger<PassengerController> logger) : Controller
     {
+        [Authorize(Policy = "Passenger")]
         [HttpPost("rate-ride")]
         [ProducesResponseType(typeof(RateRideResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
@@ -36,6 +37,7 @@ namespace Caber.Controllers
             }
         }
 
+        [Authorize(Policy = "Passenger")]
         [HttpPut("cancel-ride")]
         [ProducesResponseType(typeof(CancelRideResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
@@ -57,6 +59,7 @@ namespace Caber.Controllers
             }
         }
 
+        [Authorize(Policy = "Passenger")]
         [HttpPost("book-cab")]
         [ProducesResponseType(typeof(BookCabResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
