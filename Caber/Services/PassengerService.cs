@@ -98,7 +98,7 @@ namespace Caber.Services
                     PassengerId = ride.PassengerId,
                     RideId = ride.Id,
                     Status = ride.RideStatus.ToString(),
-                    Fare = ride.Fare ?? 0
+                    Fare = fare.ToString() + "$"
                 };
             }
             catch (Exception)

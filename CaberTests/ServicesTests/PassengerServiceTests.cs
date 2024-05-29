@@ -338,7 +338,7 @@ namespace CaberTests.ServicesTests
             Assert.That(response, Is.Not.Null);
             Assert.That(response.Status, Is.EqualTo(RideStatusEnum.Completed.ToString()));
             Assert.That(response.RideId, Is.EqualTo(1));
-            Assert.That(response.Fare, Is.GreaterThan(0));
+            Assert.That(response.Fare, Is.Not.Null);
 
 
             Assert.That(updatedRide.RideStatus.ToString(), Is.EqualTo(RideStatusEnum.Completed.ToString()));

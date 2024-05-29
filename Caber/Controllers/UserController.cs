@@ -13,6 +13,7 @@ namespace Caber.Controllers
     [ApiController]
     public class UserController(IDriverService driverService,
                                 IPassengerService passengerService,
+                                IUserService userService,
                                 ILogger<UserController> logger) : Controller
     {
         [HttpPost("register-driver")]
@@ -64,6 +65,29 @@ namespace Caber.Controllers
             {
                 logger.LogError($"Passenger is already registered on {passenger.UserId}");
                 return BadRequest(new ErrorModel("Passenger already registered", StatusCodes.Status400BadRequest));
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message, e.StackTrace);
+                return StatusCode(500);
+            }
+        }
+
+        [HttpPut("update-profile")]
+        [ProducesResponseType(typeof(UserProfileUpdateResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<UserProfileUpdateResponseDto>> UpdateProfile([FromBody] UserProfileUpdateRequestDto request)
+        {
+            try
+            {
+                var updatedProfile = await userService.UpdateUserProfile(request);
+                logger.LogInformation($"Profile updated for user with id ${request.Id}");
+                return Ok(updatedProfile);
+            }
+            catch (UserNotFoundException)
+            {
+                logger.LogError($"User for id {request.Id} not found");
+                return BadRequest(new ErrorModel("User not found", StatusCodes.Status400BadRequest));
             }
             catch (Exception e)
             {

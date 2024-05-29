@@ -107,6 +107,7 @@ namespace Caber
             builder.Services.AddScoped<ICabService, CabService>();
             builder.Services.AddScoped<IRideService, RideService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             #endregion
 
             #endregion

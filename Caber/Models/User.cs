@@ -1,4 +1,5 @@
-﻿using Caber.Models.Enums;
+﻿
+using Caber.Models.Enums;
 
 namespace Caber.Models
 {
