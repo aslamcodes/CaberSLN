@@ -43,7 +43,7 @@ namespace Caber
         {
             try
             {
-                var rides = await context.Rides.ToListAsync();
+                var rides = await context.Rides.Include(r => r.Cab).ToListAsync();
 
                 return rides;
 
