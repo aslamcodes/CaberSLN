@@ -132,7 +132,24 @@ namespace Caber.Controllers
             }
         }
 
+        [Authorize(Policy = "Passenger")]
+        [HttpGet("ride-history")]
+        [ProducesResponseType(typeof(List<RideWholeResponseDto>), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<List<RideWholeResponseDto>>> PassengerRide([FromQuery] int passengerId)
+        {
+            try
+            {
+                var rides = await passengerService.GetRides(passengerId);
 
+                return Ok(rides);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
 
     }
 }
