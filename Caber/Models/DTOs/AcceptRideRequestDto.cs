@@ -11,5 +11,8 @@ namespace Caber.Models.DTOs
         [Required(ErrorMessage = "Ride id is required")]
         [Range(1, int.MaxValue, ErrorMessage = "Ride id must be greater than 0")]
         public int RideId { get; set; }
+
+        [Required(ErrorMessage = "Accept is required")]
+        public bool Accept { get; set; }
     }
 }

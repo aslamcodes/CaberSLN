@@ -6,6 +6,7 @@
         Accepted,
         InProgress,
         Completed,
-        Cancelled
+        Cancelled,
+        CancelledByDriver
     }
 }
