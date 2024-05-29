@@ -7,6 +7,8 @@ namespace Caber.Services.Interfaces
         Task<UserProfileUpdateResponseDto> UpdateUserProfile(UserProfileUpdateRequestDto request);
 
         Task<UserProfileResponseDto> GetUserProfile(int userId);
+
+        Task<DeleteUserResponseDto> DeleteUser(DeleteUserRequestDto userDetails);
     }
 
 

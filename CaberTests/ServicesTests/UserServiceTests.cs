@@ -1,6 +1,8 @@
 ﻿using Caber.Contexts;
+using Caber.Exceptions;
 using Caber.Models;
 using Caber.Models.DTOs;
+using Caber.Models.Enums;
 using Caber.Repositories;
 using Caber.Services;
 using Caber.Services.Interfaces;
@@ -41,13 +43,16 @@ namespace CaberTests.ServicesTests
                 Password = new byte[] { 1, 2, 3, 4 },
                 PasswordHashKey = new byte[] { 1, 2, 3, 4 },
                 Phone = "123123",
-                Address = "123"
+                Address = "123",
+                UserType = UserTypeEnum.Passenger
             };
             GetContext().Users.Add(user);
             GetContext().SaveChanges();
             #endregion
 
-            userService = new UserService(new UserRepository(GetContext()));
+            userService = new UserService(new UserRepository(GetContext()),
+                                          new PassengerRepository(GetContext()),
+                                          new DriverRepository(GetContext()));
         }
 
         [Test]
@@ -55,7 +60,6 @@ namespace CaberTests.ServicesTests
         [TestCase(1, null, "John", "Cena", null)]
         [TestCase(1, "Not in nyc", "John", "Cena", null)]
         [TestCase(1, "Not in nyc", "John", "Cena", "1123123")]
-
         public async Task UpdateUserProfileTest(int uid,
                                                 string? address,
                                                 string? firstName,
@@ -111,6 +115,41 @@ namespace CaberTests.ServicesTests
                 Assert.That(user.Phone, Is.EqualTo("123123"));
             });
 
+            #endregion
+        }
+
+        [Test]
+        public async Task DeletePassengerUserTest()
+        {
+            #region Arrange
+            var passenger = new Passenger()
+            {
+                UserId = 1
+            };
+            GetContext().Passengers.Add(passenger);
+            GetContext().SaveChanges();
+            #endregion
+
+            #region Act
+            var response = await userService.DeleteUser(new DeleteUserRequestDto()
+            {
+                Id = 1,
+                userType = UserTypeEnum.Passenger
+            });
+            #endregion
+
+            #region Assert
+            Assert.That(response, Is.Not.Null);
+            Assert.Multiple(() =>
+            {
+                Assert.That(response.Id, Is.EqualTo(1));
+                Assert.That(response.Message, Is.EqualTo("User deleted successfully"));
+            });
+
+
+            Assert.ThrowsAsync<PassengerNotFoundException>(() => new PassengerRepository(GetContext()).GetByKey(1));
+            Assert.ThrowsAsync<DriverNotFoundException>(() => new DriverRepository(GetContext()).GetByKey(1));
+            Assert.ThrowsAsync<UserNotFoundException>(() => new UserRepository(GetContext()).GetByKey(1));
             #endregion
         }
 

@@ -118,5 +118,38 @@ namespace Caber.Controllers
                 return StatusCode(500);
             }
         }
+
+        //[HttpDelete]
+        //[ProducesResponseType(typeof(DeleteUserResponseDto), StatusCodes.Status200OK)]
+        //[ProducesErrorResponseType(typeof(ErrorModel))]
+        //public async Task<ActionResult<DeleteUserResponseDto>> DeleteUser([FromBody] DeleteUserRequestDto userDetails)
+        //{
+        //    try
+        //    {
+        //        var response = await userService.DeleteUser(userDetails);
+        //        logger.LogInformation($"User with id ${userDetails.Id} deleted");
+        //        return Ok(response);
+        //    }
+        //    catch (UserNotFoundException)
+        //    {
+        //        logger.LogError($"User for id {userDetails.Id} not found");
+        //        return BadRequest(new ErrorModel("User not found", StatusCodes.Status400BadRequest));
+        //    }
+        //    catch (PassengerNotFoundException)
+        //    {
+        //        logger.LogError($"Passenger for user id {userDetails.Id} not found");
+        //        return BadRequest(new ErrorModel("Passenger not found", StatusCodes.Status400BadRequest));
+        //    }
+        //    catch (DriverNotFoundException)
+        //    {
+        //        logger.LogError($"Driver for user id {userDetails.Id} not found");
+        //        return BadRequest(new ErrorModel("Driver not found", StatusCodes.Status400BadRequest));
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        logger.LogError(e.Message, e.StackTrace);
+        //        return StatusCode(500);
+        //    }
+        //}
     }
 }

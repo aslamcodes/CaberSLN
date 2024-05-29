@@ -1,12 +1,53 @@
 ﻿using Caber.Models;
 using Caber.Models.DTOs;
+using Caber.Models.Enums;
 using Caber.Repositories;
 using Caber.Services.Interfaces;
 
 namespace Caber.Services
 {
-    public class UserService(IRepository<int, User> userRepository) : IUserService
+    public class UserService(IRepository<int, User> userRepository,
+                             IRepository<int, Passenger> passengerRepository,
+                             IRepository<int, Driver> driverRepository) : IUserService
     {
+        public async Task<DeleteUserResponseDto> DeleteUser(DeleteUserRequestDto userDetails)
+        {
+            try
+            {
+                var user = await userRepository.GetByKey(userDetails.Id);
+
+                switch (user.UserType)
+                {
+                    case UserTypeEnum.Admin:
+                        throw new CannotDeleteUser("Admin user cannot be deleted");
+
+                    case UserTypeEnum.Driver:
+                        await driverRepository.Delete(userDetails.Id);
+                        break;
+
+                    case UserTypeEnum.Passenger:
+                        await passengerRepository.Delete(userDetails.Id);
+                        break;
+                    default:
+                        throw new Exception("Invalid user type");
+                }
+
+                await userRepository.Delete(userDetails.Id);
+
+                return new DeleteUserResponseDto()
+                {
+                    Id = userDetails.Id,
+                    Message = "User deleted successfully"
+                };
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<UserProfileResponseDto> GetUserProfile(int userId)
         {
             try

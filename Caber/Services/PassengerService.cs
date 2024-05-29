@@ -9,7 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caber.Services
 {
-    public class PassengerService(IRepository<int, Passenger> repository, IRepository<int, User> userRepository, IRepository<int, Ride> rideRepository) : IPassengerService
+    public class PassengerService(IRepository<int, Passenger> repository,
+                                  IRepository<int, User> userRepository,
+                                  IRepository<int, Ride> rideRepository) : IPassengerService
     {
         public async Task<PassengerRegisterResponseDto> RegisterPassenger(PassengerRegisterRequestDto passenger)
         {
@@ -89,6 +91,8 @@ namespace Caber.Services
                 double fare = baseFare + (timeDistanceFactor * 10);
                 #endregion
                 ride.Fare = fare;
+                ride.PassengerComment = request.Comment;
+                ride.PassengerRating = request.Rating;
 
                 await rideRepository.Update(ride);
 
@@ -100,6 +104,34 @@ namespace Caber.Services
                     Status = ride.RideStatus.ToString(),
                     Fare = fare.ToString() + "$"
                 };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<RideWholeResponseDto>> GetRides(int passengerId)
+        {
+            try
+            {
+                var rides = await rideRepository.GetAll();
+
+                var userRides = rides.Where(r => r.PassengerId == passengerId);
+
+                return userRides.Select(r => new RideWholeResponseDto()
+                {
+                    DriverId = r.Cab.DriverId,
+                    PassengerId = r.PassengerId,
+                    Id = r.Id,
+                    Status = r.RideStatus.ToString(),
+                    Fare = r.Fare.ToString() + "$",
+                    StartLocation = r.StartLocation,
+                    EndLocation = r.EndLocation,
+                    StartTime = r.StartTime.ToString(),
+                    EndTime = r.EndTime?.ToString()
+                }).ToList();
             }
             catch (Exception)
             {
