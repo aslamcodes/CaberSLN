@@ -137,5 +137,28 @@ namespace Caber.Controllers
                 return StatusCode(500);
             }
         }
+
+        [Authorize(Policy = "Driver")]
+        [HttpGet("driver-earnings")]
+        [ProducesResponseType(typeof(DriverEarningResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<DriverEarningResponseDto>> GetDriverEarnings([FromQuery] int driverId)
+        {
+            try
+            {
+                var driverEarnings = await driverService.GetDriverEarnings(driverId);
+
+                return Ok(driverEarnings);
+            }
+            catch (DriverNotFoundException)
+            {
+                return NotFound(new ErrorModel("Driver not found", StatusCodes.Status404NotFound));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
     }
 }
