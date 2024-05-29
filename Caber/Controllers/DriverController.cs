@@ -116,6 +116,26 @@ namespace Caber.Controllers
             }
         }
 
+        [Authorize(Policy = "Driver")]
+        [HttpGet("driver-rides")]
+        [ProducesResponseType(typeof(List<RideResponseDto>), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<List<RideResponseDto>>> GetDriverRides([FromQuery] int driverId)
+        {
+            try
+            {
+                var rides = await driverService.GetRidesForDriver(driverId);
 
+                return Ok(rides);
+            }
+            catch (DriverNotFoundException)
+            {
+                return NotFound(new ErrorModel("Driver not found", StatusCodes.Status404NotFound));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

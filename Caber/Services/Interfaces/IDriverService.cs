@@ -7,5 +7,7 @@ namespace Caber.Services.Interfaces
         Task<DriverRegisterResponseDto> RegisterDriver(DriverRegisterRequestDto driver);
 
         Task<List<RideRatingResponseDto>> GetDriverRideRatings(int driverId);
+
+        Task<List<RideResponseDto>> GetRidesForDriver(int driverId);
     }
 }

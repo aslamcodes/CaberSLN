@@ -11,7 +11,8 @@ namespace Caber.Services
 {
     public class DriverService(IRepository<int, Driver> driverRepository,
                                IRepository<int, User> userRepository,
-                               IRepository<int, Cab> cabRepository) : IDriverService
+                               IRepository<int, Cab> cabRepository,
+                               IRepository<int, Ride> rideRepository) : IDriverService
     {
         public async Task<DriverRegisterResponseDto> RegisterDriver(DriverRegisterRequestDto driver)
         {
@@ -66,6 +67,28 @@ namespace Caber.Services
                 }
 
                 return rideRatings;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<RideResponseDto>> GetRidesForDriver(int driverId)
+        {
+            try
+            {
+                var rides = (await rideRepository.GetAll()).Where(r => r.Cab.DriverId == driverId);
+
+                return rides.Select(r => new RideResponseDto()
+                {
+                    DriverId = r.Cab.DriverId,
+                    PassengerId = r.PassengerId,
+                    RideId = r.Id,
+                    Status = r.RideStatus.ToString(),
+                }).ToList();
+
             }
             catch (Exception)
             {
