@@ -1,16 +1,21 @@
-﻿using Caber.Models;
-using Caber.Services;
+﻿using Caber.Exceptions;
+using Caber.Models;
+using Caber.Models.DTOs;
 using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Caber.Controllers
 {
-    [Authorize(Policy = "Passenger")]
+
     [Route("api/[controller]")]
     [ApiController]
-    public class PassengerController(IRideService rideService, ICabService cabService) : Controller
+    public class PassengerController(IRideService rideService,
+                                     ICabService cabService,
+                                     IPassengerService passengerService,
+                                     ILogger<PassengerController> logger) : Controller
     {
+        [Authorize(Policy = "Passenger")]
         [HttpPost("rate-ride")]
         [ProducesResponseType(typeof(RateRideResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
@@ -19,19 +24,22 @@ namespace Caber.Controllers
             try
             {
                 var ratedRide = await rideService.RateRide(request);
-
+                logger.LogInformation($"Ride with ride id {request.RideId} is rated by passenger");
                 return ratedRide;
             }
             catch (RideNotFoundException)
             {
+                logger.LogInformation($"Ride with ride id {request.RideId} is not found");
                 return NotFound(new ErrorModel("Ride not found", StatusCodes.Status404NotFound));
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                logger.LogError(e.Message, e.StackTrace);
                 return StatusCode(500);
             }
         }
 
+        [Authorize(Policy = "Passenger")]
         [HttpPut("cancel-ride")]
         [ProducesResponseType(typeof(CancelRideResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
@@ -53,6 +61,7 @@ namespace Caber.Controllers
             }
         }
 
+        [Authorize(Policy = "Passenger")]
         [HttpPost("book-cab")]
         [ProducesResponseType(typeof(BookCabResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
@@ -69,6 +78,61 @@ namespace Caber.Controllers
                 return StatusCode(500);
             }
         }
+
+        [Authorize(Policy = "Passenger")]
+        [HttpPut("initiate-ride")]
+        [ProducesResponseType(typeof(RideBasicResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<RideBasicResponseDto>> InitiateRide([FromBody] InitiatedRideRequestDto request)
+        {
+            try
+            {
+                var ride = await passengerService.InitiateRide(request);
+
+                return Ok(ride);
+            }
+            catch (RideNotFoundException)
+            {
+                return NotFound(new ErrorModel("Ride not found", StatusCodes.Status404NotFound));
+            }
+            catch (CannotInitiateRide e)
+            {
+                return Conflict(new ErrorModel(message: e.Message, code: StatusCodes.Status409Conflict));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+
+        [Authorize(Policy = "Passenger")]
+        [HttpPut("complete-ride")]
+        [ProducesResponseType(typeof(RideCompletedResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<RideCompletedResponseDto>> CompleteRide([FromBody] CompleteRideRequestDto request)
+        {
+            try
+            {
+                var ride = await passengerService.CompleteRide(request);
+
+                return Ok(ride);
+            }
+            catch (RideNotFoundException)
+            {
+                return NotFound(new ErrorModel("Ride not found", StatusCodes.Status404NotFound));
+            }
+            catch (CannotCompleteRideException e)
+            {
+                return Conflict(new ErrorModel(message: e.Message, code: StatusCodes.Status409Conflict));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+
 
     }
 }

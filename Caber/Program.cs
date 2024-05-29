@@ -107,6 +107,7 @@ namespace Caber
             builder.Services.AddScoped<ICabService, CabService>();
             builder.Services.AddScoped<IRideService, RideService>();
             builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             #endregion
 
             #endregion
@@ -115,7 +116,7 @@ namespace Caber
             builder.Services.AddAuthorizationBuilder()
             .AddPolicy("Admin", policy => policy.RequireRole("Admin"))
             .AddPolicy("Driver", policy => policy.RequireRole("Driver"))
-            .AddPolicy("Passenger", policy => policy.RequireClaim("Passenger"));
+            .AddPolicy("Passenger", policy => policy.RequireRole("Passenger"));
             #endregion
 
             var app = builder.Build();

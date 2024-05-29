@@ -1,4 +1,5 @@
 ﻿using Caber.Models;
+using Caber.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,6 +52,34 @@ namespace Caber.Controllers
             }
         }
 
+        [Authorize(Policy = "Driver")]
+        [HttpPut("update-location")]
+        [ProducesResponseType(typeof(UpdateCabLocationReqsponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<UpdateCabLocationReqsponseDto>> UpdateCabLocation([FromBody] UpdateCabLocationRequestDto request)
+        {
+            try
+            {
+                var updatedCab = await cabService.UpdateCabLocation(request.CabId, request.Location);
+
+#pragma warning disable CS8601
+                return Ok(new UpdateCabLocationReqsponseDto()
+                {
+                    Location = updatedCab.Location,
+                    CabId = updatedCab.Id,
+                    Status = updatedCab.Status.ToString()
+                });
+#pragma warning restore CS8601
+            }
+            catch (CabNotFoundException)
+            {
+                return NotFound(new ErrorModel("Cab not found", StatusCodes.Status404NotFound));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
 
     }
 }

@@ -10,7 +10,7 @@ namespace Caber.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DriverController(IDriverService driverService, ICabService cabService) : Controller
+    public class DriverController(IDriverService driverService, ICabService cabService, IRideService rideService) : Controller
     {
         [Authorize]
         [HttpGet("ride-ratings-for-driver")]
@@ -94,6 +94,48 @@ namespace Caber.Controllers
             }
         }
 
+        [Authorize(Policy = "Driver")]
+        [HttpPut("accept-ride")]
+        [ProducesResponseType(typeof(AcceptRideResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<AcceptRideResponseDto>> AcceptRide([FromBody] AcceptRideRequestDto request)
+        {
+            try
+            {
+                var acceptedRide = await rideService.AcceptRide(request);
 
+                return Ok(acceptedRide);
+            }
+            catch (RideNotFoundException)
+            {
+                return NotFound(new ErrorModel("Ride not found", StatusCodes.Status404NotFound));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [Authorize(Policy = "Driver")]
+        [HttpGet("driver-rides")]
+        [ProducesResponseType(typeof(List<RideBasicResponseDto>), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<List<RideBasicResponseDto>>> GetDriverRides([FromQuery] int driverId)
+        {
+            try
+            {
+                var rides = await driverService.GetRidesForDriver(driverId);
+
+                return Ok(rides);
+            }
+            catch (DriverNotFoundException)
+            {
+                return NotFound(new ErrorModel("Driver not found", StatusCodes.Status404NotFound));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }

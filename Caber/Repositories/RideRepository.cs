@@ -1,7 +1,7 @@
 ﻿using Caber.Contexts;
+using Caber.Exceptions;
 using Caber.Models;
 using Caber.Repositories;
-using Caber.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Caber
@@ -43,7 +43,7 @@ namespace Caber
         {
             try
             {
-                var rides = await context.Rides.ToListAsync();
+                var rides = await context.Rides.Include(r => r.Cab).ToListAsync();
 
                 return rides;
 
@@ -59,7 +59,7 @@ namespace Caber
         {
             try
             {
-                var ride = await context.Rides.FindAsync(key);
+                var ride = await context.Rides.Include(r => r.Cab).FirstOrDefaultAsync(r => r.Id == key);
 
                 return ride ?? throw new RideNotFoundException(key);
             }

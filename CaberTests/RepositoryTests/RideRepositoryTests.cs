@@ -1,8 +1,8 @@
 ﻿using Caber;
 using Caber.Contexts;
+using Caber.Exceptions;
 using Caber.Models;
 using Caber.Repositories;
-using Caber.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaberTests.RepositoryTests

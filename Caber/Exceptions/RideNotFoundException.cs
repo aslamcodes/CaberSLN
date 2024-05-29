@@ -1,4 +1,4 @@
-﻿namespace Caber.Services
+﻿namespace Caber.Exceptions
 {
     [Serializable]
     public class RideNotFoundException(int rideId) : Exception
