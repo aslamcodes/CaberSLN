@@ -9,5 +9,7 @@ namespace Caber.Services.Interfaces
         Task<RideBasicResponseDto> InitiateRide(InitiatedRideRequestDto request);
 
         Task<RideCompletedResponseDto> CompleteRide(CompleteRideRequestDto request);
+
+        Task<List<RideWholeResponseDto>> GetRides(int passengerId);
     }
 }

@@ -96,6 +96,36 @@ namespace Caber.Services
                 throw;
             }
         }
+
+        public async Task<DriverEarningResponseDto> GetDriverEarnings(int driverId)
+        {
+            try
+            {
+                var driver = await driverRepository.GetByKey(driverId);
+
+                double fareSum = 0;
+
+                foreach (var cab in driver.OwnedCabs)
+                {
+                    foreach (var ride in (await cabRepository.GetByKey(cab.Id)).Rides)
+                    {
+                        fareSum += ride.Fare ?? 0;
+                    }
+
+                }
+
+                return new DriverEarningResponseDto()
+                {
+                    Earnings = fareSum.ToString() + "$",
+                    DriverId = driverId
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 
 }

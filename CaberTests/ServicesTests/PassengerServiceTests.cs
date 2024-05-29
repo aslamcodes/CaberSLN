@@ -45,7 +45,18 @@ namespace CaberTests.ServicesTests
                 Phone = "123123",
                 Address = "123"
             };
+
+            var user2 = new User()
+            {
+                Email = "driver@gmail.com",
+                FirstName = "John",
+                Password = new byte[] { 1, 2, 3, 4 },
+                PasswordHashKey = new byte[] { 1, 2, 3, 4 },
+                Phone = "123123",
+                Address = "123"
+            };
             GetContext().Users.Add(user);
+            GetContext().Users.Add(user2);
             GetContext().SaveChanges();
             #endregion
 
@@ -345,6 +356,77 @@ namespace CaberTests.ServicesTests
             #endregion
 
         }
+
+        [Test]
+        public async Task GetRidesTest()
+        {
+            #region Arrange
+            var passenger = new Passenger()
+            {
+                UserId = 1
+            };
+
+            GetContext().Passengers.Add(passenger);
+
+            Driver driver = new()
+            {
+                UserId = 1,
+                LicenseExpiryDate = DateTime.Now,
+                LicenseNumber = "123456"
+            };
+            GetContext().Drivers.Add(driver);
+
+            var cab = new Cab()
+            {
+                DriverId = 1,
+                Location = "123",
+                Color = "Red",
+                Make = "Toyota",
+                Model = "Corolla",
+                RegistrationNumber = "123",
+                Status = "Active"
+            };
+
+            GetContext().Cabs.Add(cab);
+
+            var ride = new Ride()
+            {
+                PassengerId = 1,
+                CabId = 1,
+                PassengerComment = "Great",
+                EndLocation = "123",
+                StartLocation = "123",
+                RideStatus = RideStatusEnum.Completed
+            };
+
+            var ride2 = new Ride()
+            {
+                PassengerId = 1,
+                CabId = 1,
+                PassengerComment = "Great",
+                EndLocation = "123",
+                StartLocation = "123",
+                RideStatus = RideStatusEnum.Completed
+            };
+
+            GetContext().Rides.Add(ride);
+            GetContext().Rides.Add(ride2);
+
+            await GetContext().SaveChangesAsync();
+
+            #endregion
+
+            #region Act
+            var results = await passengerService.GetRides(1);
+            #endregion
+
+            #region Assert
+            Assert.That(results, Is.Not.Null);
+            Assert.That(results, Has.Count.EqualTo(2));
+            Assert.That(await passengerService.GetRides(3), Has.Count.EqualTo(0));
+            #endregion
+        }
+
 
         [TearDown]
         public void TearDown()
