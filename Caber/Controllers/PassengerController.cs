@@ -81,9 +81,9 @@ namespace Caber.Controllers
 
         [Authorize(Policy = "Passenger")]
         [HttpPut("initiate-ride")]
-        [ProducesResponseType(typeof(RideResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(RideBasicResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
-        public async Task<ActionResult<RideResponseDto>> InitiateRide([FromBody] InitiatedRideRequestDto request)
+        public async Task<ActionResult<RideBasicResponseDto>> InitiateRide([FromBody] InitiatedRideRequestDto request)
         {
             try
             {
@@ -104,6 +104,35 @@ namespace Caber.Controllers
                 return StatusCode(500);
             }
         }
+
+
+        [Authorize(Policy = "Passenger")]
+        [HttpPut("complete-ride")]
+        [ProducesResponseType(typeof(RideCompletedResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<RideCompletedResponseDto>> CompleteRide([FromBody] CompleteRideRequestDto request)
+        {
+            try
+            {
+                var ride = await passengerService.CompleteRide(request);
+
+                return Ok(ride);
+            }
+            catch (RideNotFoundException)
+            {
+                return NotFound(new ErrorModel("Ride not found", StatusCodes.Status404NotFound));
+            }
+            catch (CannotCompleteRideException e)
+            {
+                return Conflict(new ErrorModel(message: e.Message, code: StatusCodes.Status409Conflict));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
+
 
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Caber.Models.DTOs
 {
-    public class RideResponseDto
+    public class RideBasicResponseDto
     {
         public int RideId { get; set; }
 

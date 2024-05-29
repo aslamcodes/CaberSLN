@@ -75,13 +75,13 @@ namespace Caber.Services
             }
         }
 
-        public async Task<List<RideResponseDto>> GetRidesForDriver(int driverId)
+        public async Task<List<RideBasicResponseDto>> GetRidesForDriver(int driverId)
         {
             try
             {
                 var rides = (await rideRepository.GetAll()).Where(r => r.Cab.DriverId == driverId);
 
-                return rides.Select(r => new RideResponseDto()
+                return rides.Select(r => new RideBasicResponseDto()
                 {
                     DriverId = r.Cab.DriverId,
                     PassengerId = r.PassengerId,

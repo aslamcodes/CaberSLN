@@ -8,6 +8,6 @@ namespace Caber.Services.Interfaces
 
         Task<List<RideRatingResponseDto>> GetDriverRideRatings(int driverId);
 
-        Task<List<RideResponseDto>> GetRidesForDriver(int driverId);
+        Task<List<RideBasicResponseDto>> GetRidesForDriver(int driverId);
     }
 }

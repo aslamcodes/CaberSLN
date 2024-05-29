@@ -188,7 +188,9 @@ namespace CaberTests.ServicesTests
 
 
         [Test]
-        public async Task AcceptRideTest()
+        [TestCase(true, RideStatusEnum.Accepted)]
+        [TestCase(false, RideStatusEnum.CancelledByDriver)]
+        public async Task AcceptRideTest(bool IsAccepted, RideStatusEnum status)
         {
             #region Arrange
             var cab = new Cab()
@@ -217,7 +219,8 @@ namespace CaberTests.ServicesTests
                 CabId = 1,
                 PassengerComment = "Great",
                 EndLocation = "123",
-                StartLocation = "123"
+                StartLocation = "123",
+                RideStatus = RideStatusEnum.Requested
             };
 
             GetContext().Rides.Add(ride);
@@ -225,7 +228,8 @@ namespace CaberTests.ServicesTests
 
             AcceptRideRequestDto request = new()
             {
-                RideId = 1
+                RideId = 1,
+                Accept = IsAccepted
             };
             #endregion
 
@@ -239,10 +243,16 @@ namespace CaberTests.ServicesTests
             Assert.Multiple(() =>
             {
                 Assert.That(result.RideId, Is.EqualTo(1));
-                Assert.That(result.Status, Is.EqualTo(RideStatusEnum.Accepted.ToString()));
+                Assert.That(result.Status, Is.EqualTo(status.ToString()));
             });
             #endregion
         }
 
+
+        [TearDown]
+        public void TearDown()
+        {
+            GetContext().Database.EnsureDeleted();
+        }
     }
 }

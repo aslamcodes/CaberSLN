@@ -6,6 +6,8 @@ namespace Caber.Services.Interfaces
     {
         Task<PassengerRegisterResponseDto> RegisterPassenger(PassengerRegisterRequestDto passenger);
 
-        Task<RideResponseDto> InitiateRide(InitiatedRideRequestDto request);
+        Task<RideBasicResponseDto> InitiateRide(InitiatedRideRequestDto request);
+
+        Task<RideCompletedResponseDto> CompleteRide(CompleteRideRequestDto request);
     }
 }

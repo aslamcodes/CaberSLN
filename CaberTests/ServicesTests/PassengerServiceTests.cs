@@ -121,7 +121,8 @@ namespace CaberTests.ServicesTests
                 CabId = 1,
                 PassengerComment = "Great",
                 EndLocation = "123",
-                StartLocation = "123"
+                StartLocation = "123",
+                RideStatus = RideStatusEnum.Accepted
             };
 
             GetContext().Rides.Add(ride);
@@ -131,7 +132,6 @@ namespace CaberTests.ServicesTests
             await GetContext().SaveChangesAsync();
 
             #endregion
-
 
             #region Act
 
@@ -199,7 +199,6 @@ namespace CaberTests.ServicesTests
 
             #endregion
 
-
             #region Act
 
             var request = new InitiatedRideRequestDto()
@@ -218,6 +217,134 @@ namespace CaberTests.ServicesTests
             #endregion
         }
 
+        [Test]
+        public async Task RideCompleteFailTest()
+        {
+            #region Arrange
+
+            var passenger = new Passenger()
+            {
+                UserId = 1
+            };
+
+            GetContext().Passengers.Add(passenger);
+
+            var cab = new Cab()
+            {
+                DriverId = 1,
+                Location = "123",
+                Color = "Red",
+                Make = "Toyota",
+                Model = "Corolla",
+                RegistrationNumber = "123",
+                Status = "Active"
+            };
+
+            GetContext().Cabs.Add(cab);
+
+            var ride = new Ride()
+            {
+                PassengerId = 1,
+                CabId = 1,
+                PassengerComment = "Great",
+                EndLocation = "123",
+                StartLocation = "123",
+                RideStatus = RideStatusEnum.Accepted
+            };
+
+            GetContext().Rides.Add(ride);
+
+            GetContext().SaveChanges();
+
+            await GetContext().SaveChangesAsync();
+
+            #endregion
+
+            #region Act
+
+            var request = new CompleteRideRequestDto()
+            {
+                RideId = 1,
+            };
+
+
+            #endregion
+
+            #region Assert
+            var updatedRide = await GetContext().Rides.FirstOrDefaultAsync(x => x.Id == 1);
+
+            Assert.ThrowsAsync<CannotCompleteRideException>(() => passengerService.CompleteRide(request));
+
+            #endregion
+
+        }
+
+        [Test]
+        public async Task RideCompleteTest()
+        {
+            #region Arrange
+
+            var passenger = new Passenger()
+            {
+                UserId = 1
+            };
+
+            GetContext().Passengers.Add(passenger);
+
+            var cab = new Cab()
+            {
+                DriverId = 1,
+                Location = "123",
+                Color = "Red",
+                Make = "Toyota",
+                Model = "Corolla",
+                RegistrationNumber = "123",
+                Status = "Active"
+            };
+
+            GetContext().Cabs.Add(cab);
+
+            var ride = new Ride()
+            {
+                PassengerId = 1,
+                CabId = 1,
+                PassengerComment = "Great",
+                EndLocation = "123",
+                StartLocation = "123",
+                RideStatus = RideStatusEnum.InProgress
+            };
+
+            GetContext().Rides.Add(ride);
+
+            GetContext().SaveChanges();
+
+            await GetContext().SaveChangesAsync();
+
+            #endregion
+
+            #region Act
+
+            var request = new CompleteRideRequestDto()
+            {
+                RideId = 1,
+            };
+
+            var response = await passengerService.CompleteRide(request);
+            #endregion
+
+            #region Assert
+            var updatedRide = await GetContext().Rides.FirstOrDefaultAsync(x => x.Id == 1);
+
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response.Status, Is.EqualTo(RideStatusEnum.Completed.ToString()));
+            Assert.That(response.RideId, Is.EqualTo(1));
+            Assert.That(response.Fare, Is.GreaterThan(0));
+
+
+            Assert.That(updatedRide.RideStatus.ToString(), Is.EqualTo(RideStatusEnum.Completed.ToString()));
+            #endregion
+
+        }
 
         [TearDown]
         public void TearDown()

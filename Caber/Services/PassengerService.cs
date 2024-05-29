@@ -41,7 +41,7 @@ namespace Caber.Services
             }
         }
 
-        public async Task<RideResponseDto> InitiateRide(InitiatedRideRequestDto request)
+        public async Task<RideBasicResponseDto> InitiateRide(InitiatedRideRequestDto request)
         {
             try
             {
@@ -54,12 +54,51 @@ namespace Caber.Services
                 ride.StartTime = DateTime.Now;
                 await rideRepository.Update(ride);
 
-                return new RideResponseDto()
+                return new RideBasicResponseDto()
                 {
                     DriverId = ride.Cab.Id,
                     PassengerId = ride.PassengerId,
                     RideId = ride.Id,
                     Status = ride.RideStatus.ToString()
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<RideCompletedResponseDto> CompleteRide(CompleteRideRequestDto request)
+        {
+            try
+            {
+                var ride = await rideRepository.GetByKey(request.RideId);
+                if (ride.RideStatus != RideStatusEnum.InProgress)
+                {
+                    throw new CannotCompleteRideException(ride.RideStatus.ToString());
+                }
+                var rideCompletedTime = DateTime.Now;
+                ride.RideStatus = RideStatusEnum.Completed;
+                ride.EndTime = rideCompletedTime;
+                ride.RideDistance = request.Distance;
+                #region Fare Calculation
+                var baseFare = 2.50;
+                TimeSpan rideTime = rideCompletedTime - ride.StartTime;
+                var timeDistanceFactor = request.Distance * rideTime.Minutes;
+                double fare = baseFare + (timeDistanceFactor * 10);
+                #endregion
+                ride.Fare = fare;
+
+                await rideRepository.Update(ride);
+
+                return new RideCompletedResponseDto()
+                {
+                    DriverId = ride.Cab.Id,
+                    PassengerId = ride.PassengerId,
+                    RideId = ride.Id,
+                    Status = ride.RideStatus.ToString(),
+                    Fare = ride.Fare ?? 0
                 };
             }
             catch (Exception)

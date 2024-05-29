@@ -58,6 +58,9 @@ namespace Caber.Services
             {
                 var ride = await rideRepository.GetByKey(request.RideId);
 
+                if (ride.RideStatus != RideStatusEnum.Requested)
+                    throw new CannotAcceptRideException(ride.RideStatus.ToString());
+
                 if (request.Accept)
                     ride.RideStatus = RideStatusEnum.Accepted;
                 else

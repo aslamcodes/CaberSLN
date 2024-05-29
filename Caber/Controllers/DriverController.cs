@@ -118,9 +118,9 @@ namespace Caber.Controllers
 
         [Authorize(Policy = "Driver")]
         [HttpGet("driver-rides")]
-        [ProducesResponseType(typeof(List<RideResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<RideBasicResponseDto>), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
-        public async Task<ActionResult<List<RideResponseDto>>> GetDriverRides([FromQuery] int driverId)
+        public async Task<ActionResult<List<RideBasicResponseDto>>> GetDriverRides([FromQuery] int driverId)
         {
             try
             {
