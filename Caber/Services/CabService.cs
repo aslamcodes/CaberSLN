@@ -79,11 +79,11 @@ namespace Caber
         {
             try
             {
-                var driver = await driverRepository.GetByKey(cab.DriverId);
+                var driver = await driverRepository.GetByKey(cab.DriverId) ?? throw new DriverNotFoundException(cab.DriverId);
 
-                if (driver is null)
+                if (driver.IsVerified == false)
                 {
-                    throw new DriverNotFoundException(cab.DriverId);
+                    throw new DriverIsNotVerifiedToRegister(cab.DriverId);
                 }
 
                 var registeredCab = await cabRepository.Add(cab);

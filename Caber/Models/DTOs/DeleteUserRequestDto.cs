@@ -1,7 +1,7 @@
 ﻿using Caber.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 
-namespace Caber.Services
+namespace Caber.Models.DTOs
 {
     public class DeleteUserRequestDto
     {
