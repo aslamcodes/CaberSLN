@@ -11,7 +11,8 @@ namespace Caber.Services
 {
     public class PassengerService(IRepository<int, Passenger> passengerRepository,
                                   IRepository<int, User> userRepository,
-                                  IRepository<int, Ride> rideRepository) : IPassengerService
+                                  IRepository<int, Ride> rideRepository,
+                                  IRepository<int, Cab> cabRepository) : IPassengerService
     {
         public async Task<PassengerRegisterResponseDto> RegisterPassenger(PassengerRegisterRequestDto passenger)
         {
@@ -84,16 +85,20 @@ namespace Caber.Services
                 ride.RideStatus = RideStatusEnum.Completed;
                 ride.EndTime = rideCompletedTime;
                 ride.RideDistance = request.Distance;
+
                 #region Fare Calculation
                 var baseFare = 2.50;
                 TimeSpan rideTime = rideCompletedTime - ride.StartTime;
                 var timeDistanceFactor = request.Distance * rideTime.Minutes;
                 double fare = baseFare + (timeDistanceFactor * 10);
                 #endregion
+
                 ride.Fare = fare;
                 ride.PassengerComment = request.Comment;
                 ride.PassengerRating = request.Rating;
+                ride.Cab.Location = ride.EndLocation;
 
+                await cabRepository.Update(ride.Cab);
                 await rideRepository.Update(ride);
 
                 return new RideCompletedResponseDto()

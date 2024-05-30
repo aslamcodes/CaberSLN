@@ -4,6 +4,7 @@ using Caber.Models.DTOs;
 using Caber.Repositories;
 using Caber.Services;
 using Caber.Services.Interfaces;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Moq;
@@ -38,9 +39,12 @@ namespace CaberTests.ServicesTests
             Mock<IConfiguration> mockConfig = new();
             mockConfig.Setup(x => x.GetSection("TokenKey")).Returns(congigTokenSection.Object);
 
+            var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+
             var options = new DbContextOptionsBuilder<CaberContext>()
-               .UseInMemoryDatabase("CaberPassengerTests")
-           .Options;
+               .UseSqlite(connection)
+               .Options;
 
             SetContext(new CaberContext(options));
             GetContext().Database.EnsureCreated();

@@ -62,7 +62,9 @@ namespace CaberTests.ServicesTests
 
             passengerService = new PassengerService(new PassengerRepository(GetContext()),
                                                     new UserRepository(GetContext()),
-                                                    new RideRepository(GetContext()));
+                                                    new RideRepository(GetContext()),
+                                                    new CabRepository(GetContext())
+                                                    );
         }
 
         [Test]
