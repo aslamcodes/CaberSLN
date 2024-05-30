@@ -3,6 +3,7 @@ using Caber.Contexts;
 using Caber.Exceptions;
 using Caber.Models;
 using Caber.Models.DTOs;
+using Caber.Models.Enums;
 using Caber.Repositories;
 using Caber.Services;
 using Caber.Services.Interfaces;
@@ -370,6 +371,52 @@ namespace CaberTests.ServicesTests
             #region Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Earnings, Is.EqualTo("250$"));
+            #endregion
+        }
+
+        [Test]
+        [TestCase(DriverStatusEnum.Available)]
+        public async Task UpdateDriverStatusTest(DriverStatusEnum status)
+        {
+            #region Arrange
+            var driver = new Driver() { LicenseNumber = "123", LicenseExpiryDate = DateTime.Now, UserId = 1 };
+            GetContext().Drivers.Add(driver);
+            GetContext().SaveChanges();
+            #endregion
+
+            #region Act
+
+            var request = new DriverStatusUpdateRequestDto()
+            {
+                DriverId = 1,
+                Status = status
+            };
+
+            var updatedDriver = await driverService.UpdateDriverStatus(request);
+            #endregion
+
+            #region Assert
+            Assert.That(updatedDriver, Is.Not.Null);
+            Assert.That(updatedDriver.status, Is.EqualTo(status.ToString()));
+            #endregion
+        }
+
+        [Test]
+        public async Task UpdateDriverStatusFailTest()
+        {
+
+            #region Act
+
+            var request = new DriverStatusUpdateRequestDto()
+            {
+                DriverId = 1,
+                Status = DriverStatusEnum.Suspended
+            };
+
+            #endregion
+
+            #region Assert
+            Assert.ThrowsAsync<DriverNotFoundException>(async () => await driverService.UpdateDriverStatus(request));
             #endregion
         }
 
