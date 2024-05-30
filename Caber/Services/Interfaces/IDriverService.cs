@@ -11,5 +11,7 @@ namespace Caber.Services.Interfaces
         Task<List<RideBasicResponseDto>> GetRidesForDriver(int driverId);
 
         Task<DriverEarningResponseDto> GetDriverEarnings(int driverId);
+
+        Task<DriverStatusUpdateResponseDto> UpdateDriverStatus(DriverStatusUpdateRequestDto request);
     }
 }

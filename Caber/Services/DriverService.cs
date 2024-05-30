@@ -130,6 +130,29 @@ namespace Caber.Services
                 throw;
             }
         }
+
+        public async Task<DriverStatusUpdateResponseDto> UpdateDriverStatus(DriverStatusUpdateRequestDto request)
+        {
+
+            try
+            {
+                var driver = await driverRepository.GetByKey(request.DriverId);
+
+                driver.DriverStatus = request.Status;
+
+                await driverRepository.Update(driver);
+
+                return new DriverStatusUpdateResponseDto()
+                {
+                    status = driver.DriverStatus.ToString()
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 
 }

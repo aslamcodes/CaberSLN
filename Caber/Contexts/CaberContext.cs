@@ -27,6 +27,10 @@ namespace Caber.Contexts
             modelBuilder.Entity<User>()
                 .Property(User => User.UserType)
                 .HasConversion(value => value.ToString(), v => (UserTypeEnum)Enum.Parse(typeof(UserTypeEnum), v));
+
+            modelBuilder.Entity<Driver>()
+                .Property(driver => driver.DriverStatus)
+                .HasConversion(value => value.ToString(), v => (DriverStatusEnum)Enum.Parse(typeof(DriverStatusEnum), v));
             #endregion
 
             #region TFT Mapping

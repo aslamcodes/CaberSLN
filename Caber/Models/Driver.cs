@@ -1,4 +1,6 @@
-﻿namespace Caber.Models
+﻿using Caber.Models.Enums;
+
+namespace Caber.Models
 {
     public class Driver
     {
@@ -15,5 +17,7 @@
         public User User { get; set; }
 
         public bool IsVerified { get; set; } = false;
+
+        public DriverStatusEnum DriverStatus { get; set; } = DriverStatusEnum.Available;
     }
 }
