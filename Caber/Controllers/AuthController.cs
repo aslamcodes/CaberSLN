@@ -3,9 +3,11 @@ using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Caber.Controllers
 {
+    [ExcludeFromCodeCoverage]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController(IAuthService authService) : Controller

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Caber.Services
 {
-    public class PassengerService(IRepository<int, Passenger> repository,
+    public class PassengerService(IRepository<int, Passenger> passengerRepository,
                                   IRepository<int, User> userRepository,
                                   IRepository<int, Ride> rideRepository) : IPassengerService
     {
@@ -28,7 +28,7 @@ namespace Caber.Services
                     UserId = passenger.UserId,
                 };
 
-                var createdPassenger = await repository.Add(newPassenger);
+                var createdPassenger = await passengerRepository.Add(newPassenger);
 
                 return createdPassenger.ToPassengerRegisterResponseDto();
             }
@@ -116,6 +116,8 @@ namespace Caber.Services
         {
             try
             {
+                await passengerRepository.GetByKey(passengerId);
+
                 var rides = await rideRepository.GetAll();
 
                 var userRides = rides.Where(r => r.PassengerId == passengerId);

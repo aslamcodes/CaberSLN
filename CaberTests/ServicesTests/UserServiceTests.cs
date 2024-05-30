@@ -95,6 +95,46 @@ namespace CaberTests.ServicesTests
 
             #endregion
         }
+
+
+        [Test]
+        public async Task UpdateUserProfileFailTest()
+        {
+            #region Arrange
+            var request = new UserProfileUpdateRequestDto()
+            {
+                Address = "12",
+                Id = 112,
+                FirstName = "test",
+                LastName = "test",
+                Phone = "test"
+            };
+            #endregion
+
+            #region Act 
+            #endregion
+
+            #region Assert
+
+            Assert.ThrowsAsync<UserNotFoundException>(async () => await userService.UpdateUserProfile(request));
+
+            #endregion
+        }
+
+
+        [Test]
+        public async Task GetUserProfileFailTest()
+        {
+            #region Arrange
+            var userId = 100;
+            #endregion
+
+
+            #region Assert
+            Assert.ThrowsAsync<UserNotFoundException>(async () => await userService.GetUserProfile(userId));
+
+            #endregion
+        }
         [Test]
         public async Task GetUserProfileTest()
         {
@@ -118,40 +158,40 @@ namespace CaberTests.ServicesTests
             #endregion
         }
 
-        [Test]
-        public async Task DeletePassengerUserTest()
-        {
-            #region Arrange
-            var passenger = new Passenger()
-            {
-                UserId = 1
-            };
-            GetContext().Passengers.Add(passenger);
-            GetContext().SaveChanges();
-            #endregion
+        //[Test]
+        //public async Task DeletePassengerUserTest()
+        //{
+        //    #region Arrange
+        //    var passenger = new Passenger()
+        //    {
+        //        UserId = 1
+        //    };
+        //    GetContext().Passengers.Add(passenger);
+        //    GetContext().SaveChanges();
+        //    #endregion
 
-            #region Act
-            var response = await userService.DeleteUser(new DeleteUserRequestDto()
-            {
-                Id = 1,
-                userType = UserTypeEnum.Passenger
-            });
-            #endregion
+        //    #region Act
+        //    var response = await userService.DeleteUser(new DeleteUserRequestDto()
+        //    {
+        //        Id = 1,
+        //        userType = UserTypeEnum.Passenger
+        //    });
+        //    #endregion
 
-            #region Assert
-            Assert.That(response, Is.Not.Null);
-            Assert.Multiple(() =>
-            {
-                Assert.That(response.Id, Is.EqualTo(1));
-                Assert.That(response.Message, Is.EqualTo("User deleted successfully"));
-            });
+        //    #region Assert
+        //    Assert.That(response, Is.Not.Null);
+        //    Assert.Multiple(() =>
+        //    {
+        //        Assert.That(response.Id, Is.EqualTo(1));
+        //        Assert.That(response.Message, Is.EqualTo("User deleted successfully"));
+        //    });
 
 
-            Assert.ThrowsAsync<PassengerNotFoundException>(() => new PassengerRepository(GetContext()).GetByKey(1));
-            Assert.ThrowsAsync<DriverNotFoundException>(() => new DriverRepository(GetContext()).GetByKey(1));
-            Assert.ThrowsAsync<UserNotFoundException>(() => new UserRepository(GetContext()).GetByKey(1));
-            #endregion
-        }
+        //    Assert.ThrowsAsync<PassengerNotFoundException>(() => new PassengerRepository(GetContext()).GetByKey(1));
+        //    Assert.ThrowsAsync<DriverNotFoundException>(() => new DriverRepository(GetContext()).GetByKey(1));
+        //    Assert.ThrowsAsync<UserNotFoundException>(() => new UserRepository(GetContext()).GetByKey(1));
+        //    #endregion
+        //}
 
         [TearDown]
         public void TearDown()

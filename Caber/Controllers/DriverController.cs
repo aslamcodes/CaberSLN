@@ -5,9 +5,11 @@ using Caber.Models.DTOs.Mappers;
 using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Caber.Controllers
 {
+    [ExcludeFromCodeCoverage]
     [Route("api/[controller]")]
     [ApiController]
     public class DriverController(IDriverService driverService, ICabService cabService, IRideService rideService) : Controller

@@ -1,4 +1,5 @@
-﻿using Caber.Extensions.DtoMappers;
+﻿using Caber.Exceptions;
+using Caber.Extensions.DtoMappers;
 using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.DTOs.Mappers;
@@ -37,9 +38,9 @@ namespace Caber.Services
                 return createdDriver.ToDriverRegisterResponseDto();
 
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException e)
             {
-                throw new DuplicateDriverException();
+                throw new CannotRegisterDriver();
             }
             catch (Exception)
             {
@@ -79,6 +80,9 @@ namespace Caber.Services
         {
             try
             {
+
+                await driverRepository.GetByKey(driverId);
+
                 var rides = (await rideRepository.GetAll()).Where(r => r.Cab.DriverId == driverId);
 
                 return rides.Select(r => new RideBasicResponseDto()

@@ -1,6 +1,7 @@
 ﻿using Caber;
 using Caber.Contexts;
 using Caber.Controllers;
+using Caber.Exceptions;
 using Caber.Models;
 using Caber.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -77,7 +78,6 @@ namespace CaberTests.ServicesTests
                                         new RideRepository(GetContext()),
                                         new DriverRepository(GetContext()));
         }
-
 
         [Test]
         public async Task BookCabTest()
@@ -260,6 +260,43 @@ namespace CaberTests.ServicesTests
                 Assert.That(response.RegistrationNumber, Is.EqualTo("123"));
                 Assert.That(response.DriverId, Is.EqualTo(1));
             });
+            #endregion
+
+        }
+
+        [Test]
+        public async Task RegisterCabFailTests()
+        {
+            #region Arrange
+            Driver driver = new()
+            {
+                UserId = 1,
+                LicenseExpiryDate = DateTime.Now,
+                LicenseNumber = "123456",
+                IsVerified = false
+            };
+
+            GetContext().Drivers.Add(driver);
+            GetContext().SaveChanges();
+
+            var cab1 = new Cab()
+            {
+
+                RegistrationNumber = "123",
+                Model = "GTR",
+                Make = "Nissan",
+                DriverId = 2,
+                Status = "Idle",
+                SeatingCapacity = 3,
+                Color = "Red",
+                Location = "Lahore"
+            };
+
+
+            #endregion
+
+            #region Assert
+            Assert.ThrowsAsync<DriverIsNotVerifiedToRegister>(async () => await cabService.RegisterCab(cab1));
             #endregion
 
         }

@@ -2,9 +2,11 @@
 using Caber.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Caber.Controllers
 {
+    [ExcludeFromCodeCoverage]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]

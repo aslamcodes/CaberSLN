@@ -103,6 +103,7 @@ namespace CaberTests.ServicesTests
             #endregion
         }
 
+
         [Test]
         public async Task GetDriverRideRatingsTest()
         {
@@ -240,6 +241,71 @@ namespace CaberTests.ServicesTests
             Assert.That(result, Has.Count.EqualTo(2));
             #endregion
         }
+
+        [Test]
+        public async Task GetDriverRidesFailTest()
+        {
+            #region Arrange
+            Driver driver = new()
+            {
+                UserId = 1,
+                LicenseExpiryDate = DateTime.Now,
+                LicenseNumber = "123456"
+            };
+            GetContext().Drivers.Add(driver);
+
+
+            var cab = new Cab()
+            {
+                DriverId = 1,
+                Location = "123",
+                Color = "Red",
+                Make = "Toyota",
+                Model = "Corolla",
+                RegistrationNumber = "123",
+                Status = "Active"
+            };
+
+            GetContext().Cabs.Add(cab);
+
+
+            var passenger = new Passenger()
+            {
+                UserId = 1
+            };
+
+            GetContext().Passengers.Add(passenger);
+
+
+            var ride = new Ride()
+            {
+                PassengerId = 1,
+                CabId = 1,
+                PassengerComment = "Great",
+                EndLocation = "123",
+                StartLocation = "123"
+            };
+
+            var ride2 = new Ride()
+            {
+                PassengerId = 1,
+                CabId = 1,
+                PassengerComment = "Good Ride",
+                EndLocation = "123",
+                StartLocation = "123"
+            };
+
+            GetContext().Rides.Add(ride);
+            GetContext().Rides.Add(ride2);
+            GetContext().SaveChanges();
+
+            #endregion
+
+            #region Assert
+            Assert.ThrowsAsync<DriverNotFoundException>(async () => await driverService.GetRidesForDriver(driverId: 1111));
+            #endregion
+        }
+
 
         [Test]
         public async Task GetDriverEarning()

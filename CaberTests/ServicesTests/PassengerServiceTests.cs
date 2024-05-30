@@ -412,7 +412,7 @@ namespace CaberTests.ServicesTests
             GetContext().Rides.Add(ride);
             GetContext().Rides.Add(ride2);
 
-            await GetContext().SaveChangesAsync();
+            GetContext().SaveChanges();
 
             #endregion
 
@@ -423,10 +423,17 @@ namespace CaberTests.ServicesTests
             #region Assert
             Assert.That(results, Is.Not.Null);
             Assert.That(results, Has.Count.EqualTo(2));
-            Assert.That(await passengerService.GetRides(3), Has.Count.EqualTo(0));
             #endregion
         }
 
+        [Test]
+        public async Task GetRidesFailTest()
+        {
+
+            #region Assert
+            Assert.ThrowsAsync<PassengerNotFoundException>(async () => await passengerService.GetRides(1));
+            #endregion
+        }
 
         [TearDown]
         public void TearDown()
