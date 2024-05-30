@@ -322,8 +322,8 @@ namespace CaberTests.ServicesTests
                 PassengerId = 1,
                 CabId = 1,
                 PassengerComment = "Great",
-                EndLocation = "123",
-                StartLocation = "123",
+                EndLocation = "12asda3",
+                StartLocation = "1asd23",
                 RideStatus = RideStatusEnum.InProgress
             };
 
@@ -347,14 +347,17 @@ namespace CaberTests.ServicesTests
 
             #region Assert
             var updatedRide = await GetContext().Rides.FirstOrDefaultAsync(x => x.Id == 1);
-
+            var cabOnRide = await GetContext().Cabs.FirstOrDefaultAsync(c => c.Id == 1);
             Assert.That(response, Is.Not.Null);
-            Assert.That(response.Status, Is.EqualTo(RideStatusEnum.Completed.ToString()));
-            Assert.That(response.RideId, Is.EqualTo(1));
-            Assert.That(response.Fare, Is.Not.Null);
-
-
+            Assert.Multiple(() =>
+            {
+                Assert.That(response.Status, Is.EqualTo(RideStatusEnum.Completed.ToString()));
+                Assert.That(response.RideId, Is.EqualTo(1));
+                Assert.That(response.Fare, Is.Not.Null);
+            });
             Assert.That(updatedRide.RideStatus.ToString(), Is.EqualTo(RideStatusEnum.Completed.ToString()));
+            Assert.That(cabOnRide.Location, Is.EqualTo(ride.EndLocation));
+
             #endregion
 
         }
