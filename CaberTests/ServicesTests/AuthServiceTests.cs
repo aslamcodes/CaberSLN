@@ -1,4 +1,5 @@
 ﻿using Caber.Contexts;
+using Caber.Exceptions;
 using Caber.Models.DTOs;
 using Caber.Repositories;
 using Caber.Services;
@@ -50,7 +51,7 @@ namespace CaberTests.ServicesTests
         }
 
         [Test]
-        public async Task RegisterUserTest()
+        public async Task AuthUserTest()
         {
             #region Arrange
             RegisterRequestDto registerDto = new()
@@ -92,6 +93,71 @@ namespace CaberTests.ServicesTests
 
             #endregion
         }
+
+        [Test]
+        public async Task AuthUseFailTest()
+        {
+            #region Arrange
+            RegisterRequestDto registerDto = new()
+            {
+                Email = "johsa@gmail.com",
+                FirstName = "joh",
+                Password = "1234",
+                Phone = "12",
+                Address = "12",
+                LastName = "sa"
+            };
+
+            #endregion
+
+            #region Act
+            var registerResult = await AuthService.Register(registerDto);
+            #endregion
+
+            #region Assert
+
+            Assert.ThrowsAsync<CannotRegisterUserException>(async () => await AuthService.Register(registerDto));
+
+            #endregion
+        }
+
+
+        [Test]
+        public async Task AuthUserTestFail()
+        {
+            #region Arrange
+            RegisterRequestDto registerDto = new()
+            {
+                Email = "johsa@gmail.com",
+                FirstName = "joh",
+                Password = "1234",
+                Phone = "12",
+                Address = "12",
+                LastName = "sa"
+            };
+
+            LoginRequestDto loginRequest = new()
+            {
+                Id = 1,
+                Password = "12314"
+            };
+            #endregion
+
+            #region Act
+            var registerResult = await AuthService.Register(registerDto);
+
+            #endregion
+
+            #region Assert
+
+
+            Assert.ThrowsAsync<UnauthorizedUserException>(async () => await AuthService.Login(loginRequest));
+
+
+
+            #endregion
+        }
+
 
     }
 }

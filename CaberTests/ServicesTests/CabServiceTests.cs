@@ -58,7 +58,8 @@ namespace CaberTests.ServicesTests
             {
                 UserId = 1,
                 LicenseExpiryDate = DateTime.Now,
-                LicenseNumber = "123456"
+                LicenseNumber = "123456",
+                IsVerified = true
             };
 
 

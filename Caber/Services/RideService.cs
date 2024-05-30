@@ -17,6 +17,7 @@ namespace Caber.Services
             {
                 var ride = await rideRepository.GetByKey(cancelRide.RideId) ?? throw new RideNotFoundException(cancelRide.RideId);
 
+                if (ride.RideStatus != RideStatusEnum.Accepted) throw new CannotCancelRideExcpetion(RideStatusEnum.Accepted.ToString());
                 ride.RideStatus = RideStatusEnum.Cancelled;
 
                 var cancelledRide = await rideRepository.Update(ride);

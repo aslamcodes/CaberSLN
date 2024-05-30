@@ -1,6 +1,7 @@
 ﻿using Caber;
 using Caber.Contexts;
 using Caber.Controllers;
+using Caber.Exceptions;
 using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.Enums;
@@ -69,6 +70,7 @@ namespace CaberTests.ServicesTests
                 Status = "Idle",
                 SeatingCapacity = 3,
                 Color = "Red",
+
                 Location = "Lahore"
             };
 
@@ -113,6 +115,71 @@ namespace CaberTests.ServicesTests
             #region Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Status, Is.EqualTo(Caber.Models.Enums.RideStatusEnum.Cancelled.ToString()));
+            #endregion
+        }
+
+        [Test]
+        public async Task CancelRideFail()
+        {
+            #region Arrange
+
+            var passenger = new Passenger()
+            {
+                UserId = 1
+            };
+
+            var cab = new Cab()
+            {
+                RegistrationNumber = "123",
+                Model = "GTR",
+                Make = "Nissan",
+                DriverId = 1,
+                Status = "Idle",
+                SeatingCapacity = 3,
+                Color = "Red",
+
+                Location = "Lahore"
+            };
+
+            Driver driver = new()
+            {
+                UserId = 1,
+                LicenseExpiryDate = DateTime.Now,
+                LicenseNumber = "123456"
+            };
+
+
+            var ride = new Ride()
+            {
+                CabId = 1,
+                PassengerId = 1,
+                EndLocation = "Test",
+                StartLocation = "Test",
+                RideStatus = Caber.Models.Enums.RideStatusEnum.InProgress
+            };
+
+            GetContext().Passengers.Add(passenger);
+
+            GetContext().Drivers.Add(driver);
+
+            GetContext().Cabs.Add(cab);
+
+            GetContext().Rides.Add(ride);
+
+            GetContext().SaveChanges();
+
+            var cancelRideRequest = new CancelRideRequestDto()
+            {
+                RideId = 1
+            };
+
+
+            #endregion
+
+            #region Assert
+            Assert.ThrowsAsync<RideNotFoundException>(async () => await rideService.CancelRide(new CancelRideRequestDto() { RideId = 112 }));
+            Assert.ThrowsAsync<CannotCancelRideExcpetion>(async () => await rideService.CancelRide(cancelRideRequest));
+
             #endregion
         }
 
@@ -187,6 +254,23 @@ namespace CaberTests.ServicesTests
         }
 
 
+
+        [Test]
+        public async Task RateRideFail()
+        {
+
+            #region Assert  
+            Assert.ThrowsAsync<RideNotFoundException>(async () => await rideService.RateRide(new RateRideRequestDto()
+            {
+                RideId = 1,
+                Rating = 5,
+                Comment = "Test"
+            }));
+            #endregion
+        }
+
+
+
         [Test]
         [TestCase(true, RideStatusEnum.Accepted)]
         [TestCase(false, RideStatusEnum.CancelledByDriver)]
@@ -247,6 +331,64 @@ namespace CaberTests.ServicesTests
             });
             #endregion
         }
+
+        [Test]
+        [TestCase(true, RideStatusEnum.Accepted)]
+        [TestCase(false, RideStatusEnum.CancelledByDriver)]
+        public async Task AcceptRideFailTest(bool IsAccepted, RideStatusEnum status)
+        {
+            #region Arrange
+            var cab = new Cab()
+            {
+                DriverId = 1,
+                Location = "123",
+                Color = "Red",
+                Make = "Toyota",
+                Model = "Corolla",
+                RegistrationNumber = "123",
+                Status = "Active"
+            };
+
+            GetContext().Cabs.Add(cab);
+
+            var passenger = new Passenger()
+            {
+                UserId = 2
+            };
+
+            GetContext().Passengers.Add(passenger);
+
+            var ride = new Ride()
+            {
+                PassengerId = 1,
+                CabId = 1,
+                PassengerComment = "Great",
+                EndLocation = "123",
+                StartLocation = "123",
+                RideStatus = RideStatusEnum.InProgress
+            };
+
+            GetContext().Rides.Add(ride);
+            GetContext().SaveChanges();
+
+            AcceptRideRequestDto request = new()
+            {
+                RideId = 1,
+                Accept = IsAccepted
+            };
+            #endregion
+
+
+            #region Assert
+            Assert.ThrowsAsync<CannotAcceptRideException>(async () => await rideService.AcceptRide(request));
+            Assert.ThrowsAsync<RideNotFoundException>(async () => await rideService.AcceptRide(new()
+            {
+                RideId = 12,
+                Accept = IsAccepted
+            }));
+            #endregion
+        }
+
 
 
         [TearDown]

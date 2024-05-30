@@ -3,9 +3,9 @@ using Caber.Contexts;
 using Caber.Exceptions;
 using Caber.Models;
 using Caber.Models.DTOs;
+using Caber.Models.Enums;
 using Caber.Repositories;
 using Caber.Services;
-using Caber.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace CaberTests.ServicesTests
@@ -14,7 +14,7 @@ namespace CaberTests.ServicesTests
     {
         private CaberContext context;
 
-        private IAdminService AdminService;
+        private AdminService AdminService;
         private CaberContext GetContext()
         {
             return context;
@@ -263,7 +263,7 @@ namespace CaberTests.ServicesTests
                 PassengerComment = "Great",
                 EndLocation = "123",
                 StartLocation = "123",
-                RideStatus = Caber.Models.Enums.RideStatusEnum.Requested,
+                RideStatus = RideStatusEnum.Requested,
 
             };
             var ride2 = new Ride()
@@ -272,17 +272,18 @@ namespace CaberTests.ServicesTests
                 CabId = 1,
                 PassengerComment = "Great",
                 EndLocation = "123",
-                RideStatus = Caber.Models.Enums.RideStatusEnum.Requested,
+                RideStatus = RideStatusEnum.Requested,
                 StartLocation = "123"
             };
 
             GetContext().Rides.Add(ride1);
             GetContext().Rides.Add(ride2);
+
             GetContext().SaveChanges();
             #endregion
 
             #region Act
-            var result = await AdminService.GetRidesByStatus(Caber.Models.Enums.RideStatusEnum.Requested);
+            var result = await AdminService.GetRidesByStatus(RideStatusEnum.Requested);
             #endregion
 
             #region Assert
