@@ -46,5 +46,21 @@ namespace Caber.Extensions.DtoMappers
                 Status = ride.RideStatus.ToString()
             };
         }
+
+        public static RideWholeResponseDto MapToRideWholeResponseDto(this Ride ride)
+        {
+            return new RideWholeResponseDto()
+            {
+                DriverId = ride.Cab.DriverId,
+                PassengerId = ride.PassengerId,
+                Id = ride.Id,
+                Status = ride.RideStatus.ToString(),
+                Fare = ride.Fare.ToString() + "$",
+                StartLocation = ride.StartLocation,
+                EndLocation = ride.EndLocation,
+                StartTime = ride.StartTime.ToString(),
+                EndTime = ride.EndTime?.ToString()
+            };
+        }
     }
 }

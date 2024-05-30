@@ -20,6 +20,8 @@
 
         public int DriverId { get; set; }
 
+        public Boolean IsVerified { get; set; }
+
         public Driver Driver { get; set; }
 
         public ICollection<Ride> Rides { get; set; }

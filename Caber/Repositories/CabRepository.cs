@@ -57,12 +57,12 @@ namespace Caber
         {
             try
             {
-                var driver = await context.Cabs
+                var cab = await context.Cabs
                                            .Include(c => c.Driver)
                                            .Include(c => c.Rides)
                                            .FirstOrDefaultAsync(c => c.Id == key);
 
-                return driver ?? throw new CabNotFoundException(key);
+                return cab ?? throw new CabNotFoundException(key);
             }
             catch (Exception)
             {

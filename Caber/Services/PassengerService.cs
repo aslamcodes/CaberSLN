@@ -120,17 +120,17 @@ namespace Caber.Services
 
                 var userRides = rides.Where(r => r.PassengerId == passengerId);
 
-                return userRides.Select(r => new RideWholeResponseDto()
+                return userRides.Select(ride => new RideWholeResponseDto()
                 {
-                    DriverId = r.Cab.DriverId,
-                    PassengerId = r.PassengerId,
-                    Id = r.Id,
-                    Status = r.RideStatus.ToString(),
-                    Fare = r.Fare.ToString() + "$",
-                    StartLocation = r.StartLocation,
-                    EndLocation = r.EndLocation,
-                    StartTime = r.StartTime.ToString(),
-                    EndTime = r.EndTime?.ToString()
+                    DriverId = ride.Cab.DriverId,
+                    PassengerId = ride.PassengerId,
+                    Id = ride.Id,
+                    Status = ride.RideStatus.ToString(),
+                    Fare = ride.Fare.ToString() + "$",
+                    StartLocation = ride.StartLocation,
+                    EndLocation = ride.EndLocation,
+                    StartTime = ride.StartTime.ToString(),
+                    EndTime = ride.EndTime?.ToString()
                 }).ToList();
             }
             catch (Exception)
