@@ -376,6 +376,9 @@ namespace CaberTests.ServicesTests
 
         [Test]
         [TestCase(DriverStatusEnum.Available)]
+        [TestCase(DriverStatusEnum.OnRide)]
+        [TestCase(DriverStatusEnum.Offline)]
+        [TestCase(DriverStatusEnum.Suspended)]
         public async Task UpdateDriverStatusTest(DriverStatusEnum status)
         {
             #region Arrange
