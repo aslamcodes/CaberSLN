@@ -1,6 +1,7 @@
 ﻿using Caber.Exceptions;
 using Caber.Models;
 using Caber.Models.DTOs;
+using Caber.Models.Enums;
 using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace Caber.Controllers
     public class PassengerController(IRideService rideService,
                                      ICabService cabService,
                                      IPassengerService passengerService,
+                                     IRoleService roleService,
                                      ILogger<PassengerController> logger) : Controller
     {
         [Authorize(Policy = "Passenger")]
@@ -24,8 +26,23 @@ namespace Caber.Controllers
         {
             try
             {
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                if (!await roleService.CanAccessRide(Convert.ToInt32(userId), UserTypeEnum.Passenger, request.RideId))
+                {
+                    return Unauthorized(new ErrorModel("Access Denied: Insufficient Permissions", StatusCodes.Status401Unauthorized));
+                }
+
+
                 var ratedRide = await rideService.RateRide(request);
+
                 logger.LogInformation($"Ride with ride id {request.RideId} is rated by passenger");
+
                 return ratedRide;
             }
             catch (RideNotFoundException)
@@ -48,6 +65,18 @@ namespace Caber.Controllers
         {
             try
             {
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                if (!await roleService.CanAccessRide(Convert.ToInt32(userId), UserTypeEnum.Passenger, request.RideId))
+                {
+                    return Unauthorized(new ErrorModel("Access Denied: Insufficient Permissions", StatusCodes.Status401Unauthorized));
+                }
+
                 var cancelledRide = await rideService.CancelRide(request);
 
                 return cancelledRide;
@@ -88,6 +117,18 @@ namespace Caber.Controllers
         {
             try
             {
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                if (!await roleService.CanAccessRide(Convert.ToInt32(userId), UserTypeEnum.Passenger, request.RideId))
+                {
+                    return Unauthorized(new ErrorModel("Access Denied: Insufficient Permissions", StatusCodes.Status401Unauthorized));
+                }
+
                 var ride = await passengerService.InitiateRide(request);
 
                 return Ok(ride);
@@ -115,6 +156,19 @@ namespace Caber.Controllers
         {
             try
             {
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                if (!await roleService.CanAccessRide(Convert.ToInt32(userId), UserTypeEnum.Passenger, request.RideId))
+                {
+                    return Unauthorized(new ErrorModel("Access Denied: Insufficient Permissions", StatusCodes.Status401Unauthorized));
+                }
+
+
                 var ride = await passengerService.CompleteRide(request);
 
                 return Ok(ride);
@@ -137,11 +191,25 @@ namespace Caber.Controllers
         [HttpGet("ride-history")]
         [ProducesResponseType(typeof(List<RideWholeResponseDto>), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
-        public async Task<ActionResult<List<RideWholeResponseDto>>> PassengerRide([FromQuery] int passengerId)
+        public async Task<ActionResult<List<RideWholeResponseDto>>> PassengerRide()
         {
             try
             {
-                var rides = await passengerService.GetRides(passengerId);
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                var passengerId = roleService.GetPassengerForUser(Convert.ToInt32(userId))?.Id;
+
+                if (passengerId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                var rides = await passengerService.GetRides((int)passengerId);
 
                 return Ok(rides);
             }

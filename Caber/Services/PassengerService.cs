@@ -12,6 +12,7 @@ namespace Caber.Services
     public class PassengerService(IRepository<int, Passenger> passengerRepository,
                                   IRepository<int, User> userRepository,
                                   IRepository<int, Ride> rideRepository,
+                                  IRepository<int, Driver> driverRepository,
                                   IRepository<int, Cab> cabRepository) : IPassengerService
     {
         public async Task<PassengerRegisterResponseDto> RegisterPassenger(PassengerRegisterRequestDto passenger)
@@ -77,6 +78,8 @@ namespace Caber.Services
             try
             {
                 var ride = await rideRepository.GetByKey(request.RideId);
+                var driver = await driverRepository.GetByKey(ride.Cab.DriverId);
+
                 if (ride.RideStatus != RideStatusEnum.InProgress)
                 {
                     throw new CannotCompleteRideException(ride.RideStatus.ToString());
@@ -98,8 +101,12 @@ namespace Caber.Services
                 ride.PassengerRating = request.Rating;
                 ride.Cab.Location = ride.EndLocation;
 
+                driver.TotalEarnings += fare;
+                driver.LastRide = DateTime.Now;
+
                 await cabRepository.Update(ride.Cab);
                 await rideRepository.Update(ride);
+                await driverRepository.Update(driver);
 
                 return new RideCompletedResponseDto()
                 {

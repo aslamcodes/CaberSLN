@@ -52,8 +52,10 @@ namespace Caber.Controllers
 
                 return Ok(cabs);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.Write("Inga paaru");
+                Console.WriteLine(e);
                 return StatusCode(500);
             }
         }

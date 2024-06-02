@@ -63,6 +63,7 @@ namespace CaberTests.ServicesTests
             passengerService = new PassengerService(new PassengerRepository(GetContext()),
                                                     new UserRepository(GetContext()),
                                                     new RideRepository(GetContext()),
+                                                    new DriverRepository(GetContext()),
                                                     new CabRepository(GetContext())
                                                     );
         }
@@ -234,15 +235,19 @@ namespace CaberTests.ServicesTests
         public async Task RideCompleteFailTest()
         {
             #region Arrange
+            GetContext().Drivers.Add(new Driver()
+            {
+                LicenseNumber = "123",
+                UserId = 2,
+                LicenseExpiryDate = DateTime.Now,
+            });
 
-            var passenger = new Passenger()
+            GetContext().Passengers.Add(new Passenger()
             {
                 UserId = 1
-            };
+            });
 
-            GetContext().Passengers.Add(passenger);
-
-            var cab = new Cab()
+            GetContext().Cabs.Add(new Cab()
             {
                 DriverId = 1,
                 Location = "123",
@@ -251,11 +256,9 @@ namespace CaberTests.ServicesTests
                 Model = "Corolla",
                 RegistrationNumber = "123",
                 Status = "Active"
-            };
+            });
 
-            GetContext().Cabs.Add(cab);
-
-            var ride = new Ride()
+            GetContext().Rides.Add(new Ride()
             {
                 PassengerId = 1,
                 CabId = 1,
@@ -263,9 +266,7 @@ namespace CaberTests.ServicesTests
                 EndLocation = "123",
                 StartLocation = "123",
                 RideStatus = RideStatusEnum.Accepted
-            };
-
-            GetContext().Rides.Add(ride);
+            });
 
             GetContext().SaveChanges();
 
@@ -297,14 +298,20 @@ namespace CaberTests.ServicesTests
         {
             #region Arrange
 
-            var passenger = new Passenger()
+
+            GetContext().Drivers.Add(new Driver()
+            {
+                LicenseNumber = "123",
+                UserId = 2,
+                LicenseExpiryDate = DateTime.Now,
+            });
+
+            GetContext().Passengers.Add(new Passenger()
             {
                 UserId = 1
-            };
+            });
 
-            GetContext().Passengers.Add(passenger);
-
-            var cab = new Cab()
+            GetContext().Cabs.Add(new Cab()
             {
                 DriverId = 1,
                 Location = "123",
@@ -313,11 +320,9 @@ namespace CaberTests.ServicesTests
                 Model = "Corolla",
                 RegistrationNumber = "123",
                 Status = "Active"
-            };
+            });
 
-            GetContext().Cabs.Add(cab);
-
-            var ride = new Ride()
+            GetContext().Rides.Add(new Ride()
             {
                 PassengerId = 1,
                 CabId = 1,
@@ -325,13 +330,9 @@ namespace CaberTests.ServicesTests
                 EndLocation = "12asda3",
                 StartLocation = "1asd23",
                 RideStatus = RideStatusEnum.InProgress
-            };
-
-            GetContext().Rides.Add(ride);
+            });
 
             GetContext().SaveChanges();
-
-            await GetContext().SaveChangesAsync();
 
             #endregion
 
@@ -347,6 +348,7 @@ namespace CaberTests.ServicesTests
 
             #region Assert
             var updatedRide = await GetContext().Rides.FirstOrDefaultAsync(x => x.Id == 1);
+
             var cabOnRide = await GetContext().Cabs.FirstOrDefaultAsync(c => c.Id == 1);
             Assert.That(response, Is.Not.Null);
             Assert.Multiple(() =>
@@ -356,8 +358,8 @@ namespace CaberTests.ServicesTests
                 Assert.That(response.Fare, Is.Not.Null);
             });
             Assert.That(updatedRide.RideStatus.ToString(), Is.EqualTo(RideStatusEnum.Completed.ToString()));
-            Assert.That(cabOnRide.Location, Is.EqualTo(ride.EndLocation));
-
+            Assert.That(cabOnRide.Location, Is.EqualTo("12asda3"));
+            Assert.That((await GetContext().Drivers.FindAsync(1)).TotalEarnings, Is.GreaterThan(0));
             #endregion
 
         }

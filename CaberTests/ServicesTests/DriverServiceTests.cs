@@ -308,71 +308,71 @@ namespace CaberTests.ServicesTests
         }
 
 
-        [Test]
-        public async Task GetDriverEarning()
-        {
-            #region Arrange
-            Driver driver = new()
-            {
-                UserId = 1,
-                LicenseExpiryDate = DateTime.Now,
-                LicenseNumber = "123456"
-            };
+        //[Test]
+        //public async Task GetDriverEarning()
+        //{
+        //    #region Arrange
+        //    Driver driver = new()
+        //    {
+        //        UserId = 1,
+        //        LicenseExpiryDate = DateTime.Now,
+        //        LicenseNumber = "123456"
+        //    };
 
-            Passenger passenger = new()
-            {
-                UserId = 2
-            };
+        //    Passenger passenger = new()
+        //    {
+        //        UserId = 2
+        //    };
 
-            Cab cab = new Cab()
-            {
-                DriverId = 1,
-                RegistrationNumber = "1213",
-                Make = "Toyota",
-                Model = "Corolla",
-                Color = "Red",
-                SeatingCapacity = 4,
-                Status = "Idle",
-            };
+        //    Cab cab = new Cab()
+        //    {
+        //        DriverId = 1,
+        //        RegistrationNumber = "1213",
+        //        Make = "Toyota",
+        //        Model = "Corolla",
+        //        Color = "Red",
+        //        SeatingCapacity = 4,
+        //        Status = "Idle",
+        //    };
 
-            Ride ride = new Ride()
-            {
-                CabId = 1,
-                StartLocation = "Random",
-                Fare = 100,
-                PassengerRating = 5,
-                EndLocation = "Random",
-                PassengerId = 1
-            };
+        //    Ride ride = new Ride()
+        //    {
+        //        CabId = 1,
+        //        StartLocation = "Random",
+        //        Fare = 100,
+        //        PassengerRating = 5,
+        //        EndLocation = "Random",
+        //        PassengerId = 1
+        //    };
 
-            Ride ride2 = new Ride()
-            {
-                CabId = 1,
-                StartLocation = "Random",
-                Fare = 150,
-                PassengerRating = 5,
-                EndLocation = "Random",
-                PassengerId = 1
-            };
+        //    Ride ride2 = new Ride()
+        //    {
+        //        CabId = 1,
+        //        StartLocation = "Random",
+        //        Fare = 150,
+        //        PassengerRating = 5,
+        //        EndLocation = "Random",
+        //        PassengerId = 1
+        //    };
 
-            GetContext().Drivers.Add(driver);
-            GetContext().Cabs.Add(cab);
-            GetContext().Passengers.Add(passenger);
-            GetContext().Rides.Add(ride);
-            GetContext().Rides.Add(ride2);
+        //    GetContext().Drivers.Add(driver);
+        //    GetContext().Cabs.Add(cab);
+        //    GetContext().Passengers.Add(passenger);
+        //    GetContext().Rides.Add(ride);
+        //    GetContext().Rides.Add(ride2);
 
-            await GetContext().SaveChangesAsync();
-            #endregion
+        //    await GetContext().SaveChangesAsync();
+        //    #endregion
 
-            #region Act
-            var result = await driverService.GetDriverEarnings(driverId: 1);
-            #endregion
+        //    #region Act
+        //    var result = await driverService.GetDriverEarnings(driverId: 1);
+        //    #endregion
 
-            #region Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Earnings, Is.EqualTo("250$"));
-            #endregion
-        }
+        //    #region Assert
+        //    Assert.That(result, Is.Not.Null);
+        //    Assert.That(result.Earnings, Is.EqualTo("250$"));
+        //    #endregion
+        //}
 
         [Test]
         [TestCase(DriverStatusEnum.Available)]

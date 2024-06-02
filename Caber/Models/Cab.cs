@@ -20,7 +20,7 @@
 
         public int DriverId { get; set; }
 
-        public Boolean IsVerified { get; set; }
+        public bool IsVerified { get; set; }
 
         public Driver Driver { get; set; }
 

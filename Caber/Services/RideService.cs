@@ -52,7 +52,6 @@ namespace Caber.Services
             }
         }
 
-
         public async Task<AcceptRideResponseDto> AcceptRide(AcceptRideRequestDto request)
         {
             try

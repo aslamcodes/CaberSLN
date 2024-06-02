@@ -2,6 +2,7 @@
 using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.DTOs.Mappers;
+using Caber.Models.Enums;
 using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,7 @@ namespace Caber.Controllers
     [ExcludeFromCodeCoverage]
     [Route("api/[controller]")]
     [ApiController]
-    public class DriverController(IDriverService driverService, ICabService cabService, IRideService rideService) : Controller
+    public class DriverController(IDriverService driverService, ICabService cabService, IRideService rideService, IRoleService roleService) : Controller
     {
         [Authorize]
         [HttpGet("ride-ratings-for-driver")]
@@ -45,6 +46,18 @@ namespace Caber.Controllers
         {
             try
             {
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                if (!await roleService.CanAccessCab(Convert.ToInt32(userId), request.CabId))
+                {
+                    return Unauthorized(new ErrorModel("Access Denied: Insufficient Permissions", StatusCodes.Status401Unauthorized));
+
+                }
                 var updatedCab = await cabService.UpdateCabProfile(request);
 
                 return Ok(updatedCab);
@@ -104,6 +117,19 @@ namespace Caber.Controllers
         {
             try
             {
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                if (!await roleService.CanAccessRide(Convert.ToInt32(userId), UserTypeEnum.Driver, request.RideId))
+                {
+                    return Unauthorized(new ErrorModel("Access Denied: Insufficient Permissions", StatusCodes.Status401Unauthorized));
+                }
+
+
                 var acceptedRide = await rideService.AcceptRide(request);
 
                 return Ok(acceptedRide);
@@ -122,10 +148,14 @@ namespace Caber.Controllers
         [HttpGet("driver-rides")]
         [ProducesResponseType(typeof(List<RideBasicResponseDto>), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
-        public async Task<ActionResult<List<RideBasicResponseDto>>> GetDriverRides([FromQuery] int driverId)
+        public async Task<ActionResult<List<RideBasicResponseDto>>> GetDriverRides()
         {
             try
             {
+                var userId = User.FindFirst("uid")?.Value;
+
+                var driverId = (await roleService.GetDriverForUser(Convert.ToInt32(userId))).Id;
+
                 var rides = await driverService.GetRidesForDriver(driverId);
 
                 return Ok(rides);
@@ -144,10 +174,16 @@ namespace Caber.Controllers
         [HttpGet("driver-earnings")]
         [ProducesResponseType(typeof(DriverEarningResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
-        public async Task<ActionResult<DriverEarningResponseDto>> GetDriverEarnings([FromQuery] int driverId)
+        public async Task<ActionResult<DriverEarningResponseDto>> GetDriverEarnings()
         {
             try
             {
+
+
+                var userId = User.FindFirst("uid")?.Value;
+
+                var driverId = (await roleService.GetDriverForUser(Convert.ToInt32(userId))).Id;
+
                 var driverEarnings = await driverService.GetDriverEarnings(driverId);
 
                 return Ok(driverEarnings);
