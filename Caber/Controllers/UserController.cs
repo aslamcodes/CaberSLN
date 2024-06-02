@@ -25,7 +25,21 @@ namespace Caber.Controllers
         {
             try
             {
-                var registeredDriver = await driverService.RegisterDriver(driver);
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                var modifiedDto = new DriverRegisterRequestDto()
+                {
+                    LicenseExpiryDate = driver.LicenseExpiryDate,
+                    LicenseNumber = driver.LicenseNumber,
+                    UserId = Convert.ToInt32(userId)
+                };
+
+                var registeredDriver = await driverService.RegisterDriver(modifiedDto);
                 logger.LogInformation("Driver Registered");
                 return Ok(registeredDriver);
             }
