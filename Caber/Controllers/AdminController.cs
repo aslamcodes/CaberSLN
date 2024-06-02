@@ -41,24 +41,24 @@ namespace Caber.Controllers
             }
         }
 
-        [HttpGet("get-cabs")]
-        [ProducesResponseType(typeof(List<CabResponseDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<List<CabResponseDto>>> GetCabs()
-        {
-            try
-            {
-                var cabs = await adminService.GetCabs();
+        //[HttpGet("get-cabs")]
+        //[ProducesResponseType(typeof(List<CabResponseDto>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //public async Task<ActionResult<List<CabResponseDto>>> GetCabs()
+        //{
+        //    try
+        //    {
+        //        var cabs = await adminService.GetCabs();
 
-                return Ok(cabs);
-            }
-            catch (Exception e)
-            {
-                Console.Write("Inga paaru");
-                Console.WriteLine(e);
-                return StatusCode(500);
-            }
-        }
+        //        return Ok(cabs);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Console.Write("Inga paaru");
+        //        Console.WriteLine(e);
+        //        return StatusCode(500);
+        //    }
+        //}
 
         [HttpGet("get-drivers")]
         [ProducesResponseType(typeof(List<DriverDetailsResponseDto>), StatusCodes.Status200OK)]

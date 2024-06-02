@@ -480,12 +480,12 @@ namespace CaberTests.ServicesTests
             #endregion
 
             #region Act
-            var ride = await cabService.BookCabV2(1, "Lahore", "Lahore", 1);
+            var ride = await cabService.BookCabV2(1, "Lahore", "Somwhere", 1);
             #endregion
 
             #region Assert
             Assert.That(ride, Is.Not.Null);
-            Assert.That(ride.StartLocation, Is.EqualTo("xyz"));
+            Assert.That(ride.StartLocation, Is.EqualTo("Lahore"));
             #endregion
         }
 

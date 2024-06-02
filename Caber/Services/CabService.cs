@@ -72,7 +72,7 @@ namespace Caber
                     RideStatus = RideStatusEnum.Requested,
                 });
 
-                return await rideRepository.Add(ride);
+                return ride;
 
             }
             catch (Exception)
