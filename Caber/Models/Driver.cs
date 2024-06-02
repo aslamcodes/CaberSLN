@@ -14,10 +14,17 @@ namespace Caber.Models
         public ICollection<DriverRating> DriverRatings { get; set; }
 
         public int UserId { get; set; }
+
+        public DateTime LastRide { get; set; }
+
+        public double TotalEarnings { get; set; }
+
         public User User { get; set; }
 
         public bool IsVerified { get; set; } = false;
 
         public DriverStatusEnum DriverStatus { get; set; } = DriverStatusEnum.Available;
+
+
     }
 }

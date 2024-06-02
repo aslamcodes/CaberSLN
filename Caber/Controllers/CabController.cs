@@ -1,5 +1,6 @@
 ﻿using Caber.Models;
 using Caber.Models.DTOs;
+using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
@@ -10,7 +11,7 @@ namespace Caber.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class CabController(ICabService cabService) : Controller
+    public class CabController(ICabService cabService, IRoleService roleService) : Controller
     {
         [HttpGet()]
         [ProducesResponseType(typeof(CabResponseDto), StatusCodes.Status200OK)]
@@ -62,6 +63,19 @@ namespace Caber.Controllers
         {
             try
             {
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                if (!await roleService.CanAccessCab(Convert.ToInt32(userId), request.CabId))
+                {
+                    return Unauthorized(new ErrorModel("No Access to Resource", StatusCodes.Status401Unauthorized));
+
+                }
+
                 var updatedCab = await cabService.UpdateCabLocation(request.CabId, request.Location);
 
 #pragma warning disable CS8601

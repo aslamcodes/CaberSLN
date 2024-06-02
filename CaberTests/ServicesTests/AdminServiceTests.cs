@@ -232,7 +232,7 @@ namespace CaberTests.ServicesTests
                 RegistrationNumber = "123",
                 Model = "GTR",
                 Make = "Nissan",
-                DriverId = 1,
+                DriverId = 2,
                 Status = "Idle",
                 SeatingCapacity = 3,
                 Color = "Red",

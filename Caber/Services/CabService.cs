@@ -5,6 +5,7 @@ using Caber.Extensions.DtoMappers;
 using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.DTOs.Mappers;
+using Caber.Models.Enums;
 using Caber.Repositories;
 
 namespace Caber
@@ -31,6 +32,48 @@ namespace Caber
                 var bookedRide = await rideRepository.Add(ride);
 
                 return bookedRide.MapToBookCabResponseDto(cabDetails);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Ride> BookCabV2(int passengerId, string pickupLocation, string dropoffLocation, int seatingCapacity)
+        {
+            try
+            {
+                var cabs = await cabRepository.GetAll();
+
+                var cabsByLocation = cabs.Where(c => c.Location.GetSimilarity(pickupLocation) is >= 0.40);
+
+                if (cabsByLocation == null || cabsByLocation.Count() == 0)
+                {
+                    throw new NoCabsFoundException();
+                }
+
+                var cab = cabsByLocation.Where(c => c.SeatingCapacity >= seatingCapacity)
+                                        .OrderByDescending(c => (c.Driver.LastRide - DateTime.Now))
+                                        .FirstOrDefault();
+
+                if (cab == null)
+                {
+                    throw new NoCabsFoundException();
+                }
+
+                var ride = await rideRepository.Add(new Ride()
+                {
+                    CabId = cab.Id,
+                    StartLocation = pickupLocation,
+                    PassengerId = passengerId,
+                    EndLocation = dropoffLocation,
+                    RideDate = DateTime.Now,
+                    RideStatus = RideStatusEnum.Requested,
+                });
+
+                return ride;
+
             }
             catch (Exception)
             {

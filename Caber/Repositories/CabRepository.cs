@@ -41,7 +41,7 @@ namespace Caber
         {
             try
             {
-                var cabs = await context.Cabs.ToListAsync();
+                var cabs = await context.Cabs.Include(c => c.Driver).ToListAsync();
 
                 return cabs;
 

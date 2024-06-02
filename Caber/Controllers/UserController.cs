@@ -25,7 +25,21 @@ namespace Caber.Controllers
         {
             try
             {
-                var registeredDriver = await driverService.RegisterDriver(driver);
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                var modifiedDto = new DriverRegisterRequestDto()
+                {
+                    LicenseExpiryDate = driver.LicenseExpiryDate,
+                    LicenseNumber = driver.LicenseNumber,
+                    UserId = Convert.ToInt32(userId)
+                };
+
+                var registeredDriver = await driverService.RegisterDriver(modifiedDto);
                 logger.LogInformation("Driver Registered");
                 return Ok(registeredDriver);
             }
@@ -53,7 +67,19 @@ namespace Caber.Controllers
         {
             try
             {
-                var registeredPassenger = await passengerService.RegisterPassenger(passenger);
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                var modifiedDto = new PassengerRegisterRequestDto()
+                {
+                    UserId = Convert.ToInt32(userId)
+                };
+
+                var registeredPassenger = await passengerService.RegisterPassenger(modifiedDto);
                 logger.LogInformation($"Passenger register for user with id ${passenger.UserId}");
                 return Ok(registeredPassenger);
             }
@@ -82,7 +108,29 @@ namespace Caber.Controllers
         {
             try
             {
-                var updatedProfile = await userService.UpdateUserProfile(request);
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+
+                if (userId != request.Id.ToString())
+                {
+                    return Unauthorized(new ErrorModel("Not Enough Perminssion", StatusCodes.Status401Unauthorized));
+                }
+
+                var modifiedDto = new UserProfileUpdateRequestDto()
+                {
+                    Id = Convert.ToInt32(userId),
+                    Address = request.Address,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Phone = request.Phone
+                };
+
+                var updatedProfile = await userService.UpdateUserProfile(modifiedDto);
                 logger.LogInformation($"Profile updated for user with id ${request.Id}");
                 return Ok(updatedProfile);
             }
@@ -101,17 +149,23 @@ namespace Caber.Controllers
         [HttpGet("profile")]
         [ProducesResponseType(typeof(UserProfileResponseDto), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
-        public async Task<ActionResult<UserProfileResponseDto>> GetProfile([FromQuery] int userId)
+        public async Task<ActionResult<UserProfileResponseDto>> GetProfile()
         {
             try
             {
-                var profile = await userService.GetUserProfile(userId);
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                var profile = await userService.GetUserProfile(Convert.ToInt32(userId));
                 logger.LogInformation($"Profile retrieved for user with id ${userId}");
                 return Ok(profile);
             }
             catch (UserNotFoundException)
             {
-                logger.LogError($"User for id {userId} not found");
                 return BadRequest(new ErrorModel("User not found", StatusCodes.Status400BadRequest));
             }
             catch (Exception e)

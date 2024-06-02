@@ -52,23 +52,22 @@ namespace CaberTests.ServicesTests
 
             var passenger = new Passenger()
             {
-                UserId = 1,
+                UserId = userPassenger.Id,
             };
 
             Driver driver = new()
             {
-                UserId = 1,
+                UserId = userDriver.Id,
                 LicenseExpiryDate = DateTime.Now,
                 LicenseNumber = "123456",
-                IsVerified = true
+                IsVerified = true,
+                LastRide = DateTime.Now
             };
 
 
             GetContext().Users.Add(userPassenger);
             GetContext().Users.Add(userDriver);
-
             GetContext().Passengers.Add(passenger);
-
             GetContext().Drivers.Add(driver);
 
 
@@ -449,10 +448,52 @@ namespace CaberTests.ServicesTests
             #endregion
         }
 
+        [Test]
+        public async Task BookCabNewTest()
+        {
+            #region Arrange
+
+            GetContext().Cabs.Add(
+                new Cab()
+                {
+                    RegistrationNumber = "12asd3",
+                    Model = "GTR",
+                    Make = "Nissan",
+                    DriverId = 1,
+                    Status = "Idle",
+                    SeatingCapacity = 4,
+                    Color = "Red",
+                    Location = "Lahore"
+                });
+            GetContext().Cabs.Add(new Cab()
+            {
+                RegistrationNumber = "1223as",
+                Model = "GTR",
+                Make = "Nissan",
+                DriverId = 2,
+                Status = "Idle",
+                SeatingCapacity = 4,
+                Color = "Red",
+                Location = "xyz"
+            });
+            GetContext().SaveChanges();
+            #endregion
+
+            #region Act
+            var ride = await cabService.BookCabV2(1, "Lahore", "Somwhere", 1);
+            #endregion
+
+            #region Assert
+            Assert.That(ride, Is.Not.Null);
+            Assert.That(ride.StartLocation, Is.EqualTo("Lahore"));
+            #endregion
+        }
+
         [TearDown]
         public void TearDown()
         {
             GetContext().Database.EnsureDeleted();
+            GetContext().Dispose();
         }
     }
 }

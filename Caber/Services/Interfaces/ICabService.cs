@@ -16,5 +16,7 @@ namespace Caber.Controllers
         Task<Cab> UpdateCabLocation(int cabId, string location);
 
         Task<UpdateCabResponseDto> UpdateCabProfile(UpdateCabRequestDto cab);
+
+        Task<Ride> BookCabV2(int passengerId, string pickupLocation, string dropoffLocation, int seatingCapacity);
     }
 }
