@@ -480,7 +480,7 @@ namespace CaberTests.ServicesTests
             #endregion
 
             #region Act
-            var ride = await cabService.BookCabV2(1, "Lahore", "Somwhere", 1);
+            var ride = await cabService.BookAnyCab(1, "Lahore", "Somwhere", 1);
             #endregion
 
             #region Assert

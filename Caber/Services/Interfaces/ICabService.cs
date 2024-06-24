@@ -9,6 +9,8 @@ namespace Caber.Controllers
 
         Task<BookCabResponseDto> BookCab(BookCabRequestDto request);
 
+        Task<Ride> BookAnyCab(int passengerId, string pickupLocation, string dropoffLocation, int seatingCapacity);
+
         Task<DriverDetailsResponseDto> GetDriverDetails(int cabId);
 
         Task<Cab> RegisterCab(Cab cab);
@@ -16,7 +18,5 @@ namespace Caber.Controllers
         Task<Cab> UpdateCabLocation(int cabId, string location);
 
         Task<UpdateCabResponseDto> UpdateCabProfile(UpdateCabRequestDto cab);
-
-        Task<Ride> BookCabV2(int passengerId, string pickupLocation, string dropoffLocation, int seatingCapacity);
     }
 }

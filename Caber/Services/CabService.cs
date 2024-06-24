@@ -40,7 +40,7 @@ namespace Caber
             }
         }
 
-        public async Task<Ride> BookCabV2(int passengerId, string pickupLocation, string dropoffLocation, int seatingCapacity)
+        public async Task<Ride> BookAnyCab(int passengerId, string pickupLocation, string dropoffLocation, int seatingCapacity)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace Caber
                 }
 
                 var cab = cabsByLocation.Where(c => c.SeatingCapacity >= seatingCapacity)
-                                        .OrderByDescending(c => (c.Driver.LastRide - DateTime.Now))
+                                        .OrderByDescending(c => c.Driver.LastRide - DateTime.Now)
                                         .FirstOrDefault();
 
                 if (cab == null)

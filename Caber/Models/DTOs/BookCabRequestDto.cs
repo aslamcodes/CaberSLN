@@ -18,5 +18,9 @@ namespace Caber.Controllers
         [Range(1, int.MaxValue, ErrorMessage = "Passenger id must be greater than 0")]
         public int PassengerId { get; set; }
 
+        [Required(ErrorMessage = "Seating capacity is required")]
+        [Range(1, int.MaxValue, ErrorMessage = "Seating Capacity must be greater than 0")]
+        public int SeatingCapacity { get; set; }
+
     }
 }

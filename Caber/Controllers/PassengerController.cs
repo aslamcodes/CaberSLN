@@ -103,11 +103,35 @@ namespace Caber.Controllers
 
                 return Ok(ride);
             }
+            catch (CabNotFoundException)
+            {
+                return NotFound(new ErrorModel("Cab not found", StatusCodes.Status404NotFound));
+            }
             catch (Exception)
             {
                 return StatusCode(500);
             }
         }
+
+
+        [Authorize(Policy = "Passenger")]
+        [HttpPost("book-any-cab")]
+        [ProducesResponseType(typeof(BookCabResponseDto), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<BookCabResponseDto>> BookAnyCab([FromBody] BookCabRequestDto request)
+        {
+            try
+            {
+                var ride = await cabService.BookAnyCab(request.PassengerId, request.PickupLocation, request.DropoffLocation, request.SeatingCapacity);
+
+                return Ok(ride);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
 
         [Authorize(Policy = "Passenger")]
         [HttpPut("initiate-ride")]
