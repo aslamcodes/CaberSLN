@@ -1,4 +1,4 @@
-﻿namespace Caber.Repositories
+﻿namespace Caber.Repositories.Interfaces
 {
     public interface IRepository<K, T> where T : class
     {

@@ -1,6 +1,6 @@
 ﻿using Caber.Models;
 using Caber.Models.Enums;
-using Caber.Repositories;
+using Caber.Repositories.Interfaces;
 using Caber.Services.Interfaces;
 
 namespace Caber.Services

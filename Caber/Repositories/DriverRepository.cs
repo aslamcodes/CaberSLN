@@ -1,6 +1,7 @@
 ﻿using Caber.Contexts;
 using Caber.Exceptions;
 using Caber.Models;
+using Caber.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Caber.Repositories

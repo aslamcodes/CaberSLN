@@ -4,7 +4,7 @@ using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.DTOs.Mappers;
 using Caber.Models.Enums;
-using Caber.Repositories;
+using Caber.Repositories.Interfaces;
 using Caber.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

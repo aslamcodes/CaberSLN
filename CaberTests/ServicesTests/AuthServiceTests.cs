@@ -51,7 +51,10 @@ namespace CaberTests.ServicesTests
 
 
             TokenService = new TokenService(mockConfig.Object);
-            AuthService = new AuthService(TokenService, new UserRepository(GetContext()));
+            AuthService = new AuthService(TokenService,
+                                          new UserRepository(GetContext()),
+                                          new UserRepository(GetContext()),
+                                          new PassengerRepository(GetContext()));
         }
 
         [Test]
@@ -70,7 +73,7 @@ namespace CaberTests.ServicesTests
 
             LoginRequestDto loginRequest = new()
             {
-                Id = 1,
+                Email = "johsa@gmail.com",
                 Password = "1234"
             };
             #endregion
@@ -142,7 +145,7 @@ namespace CaberTests.ServicesTests
 
             LoginRequestDto loginRequest = new()
             {
-                Id = 1,
+                Email = "johsa@gmail.com",
                 Password = "12314"
             };
             #endregion

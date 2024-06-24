@@ -3,7 +3,7 @@ using Caber.Extensions.DtoMappers;
 using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.Enums;
-using Caber.Repositories;
+using Caber.Repositories.Interfaces;
 using Caber.Services.Interfaces;
 
 namespace Caber.Services
