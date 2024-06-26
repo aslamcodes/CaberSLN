@@ -14,13 +14,13 @@ namespace Caber.Services
     public class AuthService(ITokenService tokenService,
                              IRepository<int, User> userRepository,
                              IUserRepository userActionsRepository,
-                             IRepository<int, Passenger> passengerRepository) : IAuthService
+                             IRepository<int, Passenger> passengerRepository,
+                             IRepository<int, Driver> driverRepository) : IAuthService
     {
         public async Task<AuthResponseDto> Login(LoginRequestDto loginDto)
         {
             try
             {
-
                 var userDB = await userActionsRepository.GetByEmail(loginDto.Email);
 
                 HMACSHA512 hMACSHA = new(userDB.PasswordHashKey);
@@ -87,15 +87,24 @@ namespace Caber.Services
                 {
                     Email = registerDto.Email,
                     FirstName = registerDto.FirstName,
-
                     PasswordHashKey = hMACSHA.Key,
                     Password = hMACSHA.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                    UserType = UserTypeEnum.Passenger,
+                    UserType = UserTypeEnum.Driver,
                 };
 
 
 
                 user = await userRepository.Add(user);
+
+
+                var newDriver = new Driver
+                {
+                    UserId = user.Id,
+                    LicenseNumber = registerDto.LicenseNumber,
+                    LicenseExpiryDate = registerDto.LicenseExpiryDate
+                };
+
+                var createdDriver = await driverRepository.Add(newDriver);
 
                 var token = tokenService.GenerateUserToken(user);
 
@@ -128,14 +137,15 @@ namespace Caber.Services
                     UserType = UserTypeEnum.Passenger,
                 };
 
-                // Add to passenger repo
-                var passenger = new Passenger()
-                {
-                };
-
                 user = await userRepository.Add(user);
 
 
+                var newPassenger = new Passenger()
+                {
+                    UserId = user.Id,
+                };
+
+                var createdPassenger = await passengerRepository.Add(newPassenger);
 
                 var token = tokenService.GenerateUserToken(user);
 

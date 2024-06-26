@@ -2,6 +2,7 @@
 using Caber.Models.DTOs;
 using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 
@@ -11,6 +12,7 @@ namespace Caber.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors]
     public class CabController(ICabService cabService, IRoleService roleService) : Controller
     {
         [HttpGet()]

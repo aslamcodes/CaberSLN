@@ -43,7 +43,7 @@ namespace Caber.Services
             {
                 var cabs = (await cabRepository.GetAll()).Select(cab => new CabResponseDto()
                 {
-                    CabId = cab.Id,
+                    Id = cab.Id,
                     DriverId = cab.DriverId,
                     Location = cab.Location,
                     Status = cab.Status,
@@ -65,6 +65,15 @@ namespace Caber.Services
                 var drivers = (await driverRepository.GetAll())
                                 .Select(driver => new DriverDetailsResponseDto()
                                 {
+                                    user = new UserProfileResponseDto()
+                                    {
+                                        FirstName = driver.User.FirstName,
+                                        Address = driver.User.Address,
+                                        Email = driver.User.Email,
+                                        Id = driver.User.Id,
+                                        LastName = driver.User.LastName,
+                                        Phone = driver.User.Phone
+                                    },
                                     DriverId = driver.Id,
                                     LicenseExpiryDate = driver.LicenseExpiryDate,
                                     LicenseNumber = driver.LicenseNumber

@@ -8,10 +8,16 @@ namespace Caber.Models.DTOs.Mappers
         {
             return new CabResponseDto
             {
-                CabId = cab.Id,
                 DriverId = cab.DriverId,
                 Location = cab.Location,
-                Status = cab.Status
+                Status = cab.Status,
+                Id = cab.Id,
+                Color = cab.Color,
+                IsVerified = cab.IsVerified,
+                Make = cab.Make,
+                Model = cab.Model,
+                RegistrationNumber = cab.RegistrationNumber,
+                SeatingCapacity = cab.SeatingCapacity
             };
         }
 

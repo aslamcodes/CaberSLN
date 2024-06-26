@@ -178,5 +178,20 @@ namespace Caber
                 throw;
             }
         }
+
+        public async Task<List<Cab>> GetCabsForDriver(int driverId)
+        {
+            try
+            {
+                var cabs = await cabRepository.GetAll();
+
+                return cabs.Where(c => c.DriverId == driverId).ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

@@ -43,7 +43,7 @@ namespace Caber.Repositories
         {
             try
             {
-                var drivers = await context.Drivers.ToListAsync();
+                var drivers = await context.Drivers.Include(d => d.User).ToListAsync();
 
                 return drivers;
 

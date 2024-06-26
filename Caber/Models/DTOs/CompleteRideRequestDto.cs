@@ -5,7 +5,7 @@ namespace Caber.Models.DTOs
     public class CompleteRideRequestDto
     {
         [Required(ErrorMessage = "RideId is Required")]
-        [Range(1, int.MaxValue, ErrorMessage = "RideId should be greater than 0")]
+        [Range(0, int.MaxValue, ErrorMessage = "RideId should be greater than 0")]
         public int RideId { get; set; }
 
         [Required(ErrorMessage = "Please give us rating")]

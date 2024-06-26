@@ -6,7 +6,9 @@
         {
             return new AuthResponseDto
             {
-                Token = token
+                Token = token,
+                Role = registerDto.UserType.ToString(),
+                Id = registerDto.Id
             };
         }
     }

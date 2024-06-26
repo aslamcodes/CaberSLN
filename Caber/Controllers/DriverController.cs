@@ -84,9 +84,23 @@ namespace Caber.Controllers
         {
             try
             {
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                var driver = await roleService.GetDriverForUser(Convert.ToInt32(userId));
+
+                if (driver == null)
+                {
+                    return NotFound(new ErrorModel("Driver not found", StatusCodes.Status404NotFound));
+                }
+
                 var cab = new Cab
                 {
-                    DriverId = request.DriverId,
+                    DriverId = driver.Id,
                     Color = request.Color,
                     SeatingCapacity = request.SeatingCapacity,
                     Model = request.Model,
@@ -102,6 +116,10 @@ namespace Caber.Controllers
             catch (DriverNotFoundException)
             {
                 return NotFound(new ErrorModel("Driver not found", StatusCodes.Status404NotFound));
+            }
+            catch (DriverIsNotVerifiedToRegister)
+            {
+                return BadRequest(new ErrorModel("Driver is not verified to register a cab", StatusCodes.Status400BadRequest));
             }
             catch (Exception)
             {
@@ -129,6 +147,15 @@ namespace Caber.Controllers
                     return Unauthorized(new ErrorModel("Access Denied: Insufficient Permissions", StatusCodes.Status401Unauthorized));
                 }
 
+
+                var driver = await roleService.GetDriverForUser(Convert.ToInt32(userId));
+
+                if (driver == null)
+                {
+                    return NotFound(new ErrorModel("Driver not found", StatusCodes.Status404NotFound));
+                }
+
+                request.DriverId = driver.Id;
 
                 var acceptedRide = await rideService.AcceptRide(request);
 
@@ -197,6 +224,36 @@ namespace Caber.Controllers
                 return StatusCode(500);
             }
         }
+
+
+        [Authorize(Policy = "Driver")]
+        [HttpGet("driver-cabs")]
+        [ProducesResponseType(typeof(List<CabResponseDto>), StatusCodes.Status200OK)]
+        [ProducesErrorResponseType(typeof(ErrorModel))]
+        public async Task<ActionResult<DriverEarningResponseDto>> GetDriverCabs()
+        {
+            try
+            {
+
+
+                var userId = User.FindFirst("uid")?.Value;
+
+                var driverId = (await roleService.GetDriverForUser(Convert.ToInt32(userId))).Id;
+
+                var cabs = await cabService.GetCabsForDriver(driverId);
+
+                return Ok(cabs.Select(c => c.MapToCabResponseDto()));
+            }
+            catch (DriverNotFoundException)
+            {
+                return NotFound(new ErrorModel("Driver not found", StatusCodes.Status404NotFound));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
+
 
     }
 }

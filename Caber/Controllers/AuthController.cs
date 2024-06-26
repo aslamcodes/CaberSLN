@@ -116,10 +116,6 @@ namespace Caber.Controllers
                 return StatusCode(500);
             }
         }
-
-
-
-
     }
 
 
