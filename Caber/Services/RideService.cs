@@ -4,7 +4,7 @@ using Caber.Extensions.DtoMappers;
 using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.Enums;
-using Caber.Repositories;
+using Caber.Repositories.Interfaces;
 using Caber.Services.Interfaces;
 
 namespace Caber.Services
@@ -18,6 +18,7 @@ namespace Caber.Services
                 var ride = await rideRepository.GetByKey(cancelRide.RideId) ?? throw new RideNotFoundException(cancelRide.RideId);
 
                 if (ride.RideStatus != RideStatusEnum.Accepted) throw new CannotCancelRideExcpetion(RideStatusEnum.Accepted.ToString());
+
                 ride.RideStatus = RideStatusEnum.Cancelled;
 
                 var cancelledRide = await rideRepository.Update(ride);

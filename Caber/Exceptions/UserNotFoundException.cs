@@ -1,11 +1,21 @@
 ﻿namespace Caber.Exceptions
 {
     [Serializable]
-    public class UserNotFoundException(int key) : Exception
+    public class UserNotFoundException : Exception
     {
-        public int Key { get; } = key;
+        public string _message { get; set; }
 
-        public override string Message => $"User with key {Key} not found";
+        public UserNotFoundException(int key)
+        {
+            _message = $"User with key {key} not found";
+        }
+
+        public UserNotFoundException()
+        {
+            _message = $"User not found";
+
+        }
+        public override string Message => _message;
 
     }
 }

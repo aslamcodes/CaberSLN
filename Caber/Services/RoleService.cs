@@ -1,6 +1,6 @@
 ﻿using Caber.Models;
 using Caber.Models.Enums;
-using Caber.Repositories;
+using Caber.Repositories.Interfaces;
 using Caber.Services.Interfaces;
 
 namespace Caber.Services
@@ -71,7 +71,9 @@ namespace Caber.Services
         {
             try
             {
-                return (await passengerRepository.GetAll()).FirstOrDefault(p => p.UserId == userId);
+                var passengers = await passengerRepository.GetAll();
+
+                return passengers.FirstOrDefault(p => p.UserId == userId);
             }
             catch (Exception)
             {

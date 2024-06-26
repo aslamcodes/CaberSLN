@@ -4,6 +4,7 @@ using Caber.Models.DTOs;
 using Caber.Models.Enums;
 using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 
@@ -12,6 +13,7 @@ namespace Caber.Controllers
     [ExcludeFromCodeCoverage]
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors]
     public class PassengerController(IRideService rideService,
                                      ICabService cabService,
                                      IPassengerService passengerService,
@@ -99,6 +101,22 @@ namespace Caber.Controllers
         {
             try
             {
+                var userId = User.FindFirst("uid")?.Value;
+
+                if (userId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                var passengerId = await roleService.GetPassengerForUser(Convert.ToInt32(userId));
+
+                if (passengerId == null)
+                {
+                    return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
+                }
+
+                request.PassengerId = passengerId.Id;
+
                 var ride = await cabService.BookCab(request);
 
                 return Ok(ride);
@@ -215,7 +233,7 @@ namespace Caber.Controllers
         [HttpGet("ride-history")]
         [ProducesResponseType(typeof(List<RideWholeResponseDto>), StatusCodes.Status200OK)]
         [ProducesErrorResponseType(typeof(ErrorModel))]
-        public async Task<ActionResult<List<RideWholeResponseDto>>> PassengerRide()
+        public async Task<ActionResult<List<RideWholeResponseDto>>> PassengerRides()
         {
             try
             {
@@ -226,21 +244,24 @@ namespace Caber.Controllers
                     return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
                 }
 
-                var passengerId = roleService.GetPassengerForUser(Convert.ToInt32(userId))?.Id;
+                var passenger = await roleService.GetPassengerForUser(Convert.ToInt32(userId));
 
-                if (passengerId == null)
+                if (passenger == null)
                 {
                     return Unauthorized(new ErrorModel("Unauthorized", StatusCodes.Status401Unauthorized));
                 }
 
-                var rides = await passengerService.GetRides((int)passengerId);
+                var rides = await passengerService.GetRides(passenger.Id);
 
                 return Ok(rides);
             }
+            catch (PassengerNotFoundException)
+            {
+                return NotFound(new ErrorModel("Passenger not found", StatusCodes.Status404NotFound));
+            }
             catch (Exception)
             {
-
-                throw;
+                return StatusCode(500);
             }
         }
 

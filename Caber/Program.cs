@@ -3,6 +3,7 @@ using Caber.Contexts;
 using Caber.Controllers;
 using Caber.Models;
 using Caber.Repositories;
+using Caber.Repositories.Interfaces;
 using Caber.Services;
 using Caber.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -29,6 +30,19 @@ namespace Caber
             builder.Services.AddEndpointsApiExplorer();
 
             builder.Services.AddLogging(l => l.AddLog4Net());
+
+            #region CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                                       builder =>
+                                       {
+                                           builder.AllowAnyOrigin()
+                                                  .AllowAnyMethod()
+                                                  .AllowAnyHeader();
+                                       });
+            });
+            #endregion
 
             #region SwaggerGen
 
@@ -95,6 +109,7 @@ namespace Caber
 
             #region Repositories
             builder.Services.AddScoped<IRepository<int, User>, UserRepository>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IRepository<int, Driver>, DriverRepository>();
             builder.Services.AddScoped<IRepository<int, Passenger>, PassengerRepository>();
             builder.Services.AddScoped<IRepository<int, Cab>, CabRepository>();
@@ -138,6 +153,7 @@ namespace Caber
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseCors();
 
             app.UseAuthentication();
 

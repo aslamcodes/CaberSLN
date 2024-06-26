@@ -6,7 +6,7 @@ using Caber.Models;
 using Caber.Models.DTOs;
 using Caber.Models.DTOs.Mappers;
 using Caber.Models.Enums;
-using Caber.Repositories;
+using Caber.Repositories.Interfaces;
 
 namespace Caber
 {
@@ -171,6 +171,21 @@ namespace Caber
                 var updatedCab = await cabRepository.Update(cab);
 
                 return updatedCab.MapToUpdateCabResponseDto();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<List<Cab>> GetCabsForDriver(int driverId)
+        {
+            try
+            {
+                var cabs = await cabRepository.GetAll();
+
+                return cabs.Where(c => c.DriverId == driverId).ToList();
             }
             catch (Exception)
             {

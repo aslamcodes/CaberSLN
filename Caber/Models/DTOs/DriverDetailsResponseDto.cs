@@ -1,4 +1,6 @@
-﻿namespace Caber.Controllers
+﻿using Caber.Models.DTOs;
+
+namespace Caber.Controllers
 {
     public class DriverDetailsResponseDto
     {
@@ -7,5 +9,7 @@
         public string LicenseNumber { get; set; }
 
         public DateTime LicenseExpiryDate { get; set; }
+
+        public UserProfileResponseDto user { get; set; }
     }
 }

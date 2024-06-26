@@ -1,11 +1,12 @@
 ﻿using Caber.Contexts;
 using Caber.Exceptions;
 using Caber.Models;
+using Caber.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Caber.Repositories
 {
-    public class UserRepository(CaberContext context) : IRepository<int, User>
+    public class UserRepository(CaberContext context) : IRepository<int, User>, IUserRepository
     {
         public async Task<User> Add(User entity)
         {
@@ -53,6 +54,21 @@ namespace Caber.Repositories
                 throw;
             }
 
+        }
+
+        public Task<User?> GetByEmail(string Email)
+        {
+            try
+            {
+                var user = context.Users.FirstOrDefaultAsync(u => u.Email == Email);
+
+                return user ?? throw new UserNotFoundException();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<User> GetByKey(int key)
